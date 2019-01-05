@@ -79,10 +79,11 @@ if(SERVER)then
                 autobox:SyncPlaytime()
                 timer.Remove("AAT_TimeSync_"..time)
             end)
-            if(ply:GetNWString("AAT_Rank",nil)!=nil)then
-                ply:SetNWString("AAT_Rank",data.Rank)
-                autobox:SyncRanks(ply)
-            end
+            
+            ply:SetNWString("AAT_Rank",data.Rank)
+            autobox:SyncRanks(ply)
+            autobox:SyncPerms(ply)
+
             hook.Run("AAT_InitializePlayer",ply)
             ply.Initialized = true            
         end        

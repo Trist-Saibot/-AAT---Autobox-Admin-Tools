@@ -64,6 +64,9 @@ if(SERVER)then
     function autobox:SQL_GetRanks()
         return sql.Query("SELECT * from AAT_Ranks")
     end
+    function autobox:SQL_GetPerms()
+        return sql.Query("SELECT * from AAT_Permissions")
+    end
     function autobox:SQL_FindRank(rank)
         if(rank)then
             if(type(rank)=="string")then

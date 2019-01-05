@@ -1,5 +1,6 @@
 --Rank management and permissions
 if(!autobox.ranks)then autobox.ranks = {} end
+if(!autobox.perms)then autobox.perms = {} end
 
 --Tables for adding meta functions to players and entities
 local AAT_Player = FindMetaTable("Player")
@@ -7,6 +8,7 @@ local AAT_Entity = FindMetaTable("Entity")
 
 if(SERVER)then        
     util.AddNetworkString("AAT_SyncRanks")
+    util.AddNetworkString("AAT_SyncPerms")
     function AAT_Player:AAT_SetRank(rank)  
         if(autobox:SQL_FindRank(rank))then
             autobox:SQL_UpdatePlayerRank(self,rank)
@@ -53,6 +55,16 @@ if(SERVER)then
             net.WriteTable(autobox:SQL_GetRanks())
         net.Send(ply)
     end
+    function autobox:SyncPerms(ply)
+        net.Start("AAT_SyncPerms")
+            net.WriteTable(autobox:SQL_GetPerms())
+        net.Send(ply)
+    end
+    net.Receive("AAT_SyncPerms",function()
+        for _,v in ipairs(player.GetAll())do
+            autobox:SyncPerms(ply)
+        end
+    end)
     function autobox:GetRankInfo(rank)
         return autobox:SQL_FindRank(rank)
     end
@@ -65,6 +77,9 @@ if(CLIENT)then
         end
         table.SortByMember(autobox.ranks,Immunity,true)
     end)
+    net.Receive("AAT_SyncPerms",function()
+        autobox.perms = net.ReadTable()
+    end)
     function autobox:GetRankInfo(rank)
         for _,v in pairs(autobox.ranks)do
             if(rank == v.Rank)then
@@ -73,10 +88,29 @@ if(CLIENT)then
         end
         return nil
     end
+    function AAT_Player:AAT_HasPerm(perm)
+        if(self:AAT_IsSpecialBoy())then return true end
+        local permission = nil
+        for _,v in ipairs(autobox.perms)do
+            if(v.Permission==perm)then
+                permission = v
+                break
+            end
+        end
+        if(permission)then
+            local rank = self:AAT_GetRank()
+            if(rank)then
+                return autobox:GetRankInfo(rank).Immunity>=permission.Immunity
+            end
+        end
+        return nil
+    end    
     function autobox:HasImmunity(rank,rank2)
         return autobox:GetRankInfo(rank).Immunity >= autobox:GetRankInfo(rank2).Immunity
     end
 end
+
+--Shared
 function AAT_Player:AAT_GetRank()
     if(!self:IsValid())then return end
     if(SERVER and self:IsListenServerHost())then return "owner" end
