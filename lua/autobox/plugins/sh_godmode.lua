@@ -24,7 +24,7 @@ function PLUGIN:Call(ply,args)
         autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has disabled godmode for ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     end    
 end
-function PLUGIN:PlayerSpawn()
+function PLUGIN:PlayerSpawn(ply)
     if(ply.AAT_God)then ply:GodEnable() end
 end
 

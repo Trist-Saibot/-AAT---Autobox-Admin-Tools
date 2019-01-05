@@ -33,18 +33,18 @@ end
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-        local unfilteredPlayers = autobox:FindPlayers(args)
-        local players = {}
-        for k,v in ipairs(unfilteredPlayers)do
-            if(ply:AAT_BetterThan(v:AAT_GetRank()))then
-                table.insert(players,v)
-            end
+    local unfilteredPlayers = autobox:FindPlayers(args)
+    local players = {}
+    for k,v in ipairs(unfilteredPlayers)do
+        if(ply:AAT_BetterThan(v:AAT_GetRank()))then
+            table.insert(players,v)
         end
-        if(!autobox:ValidateHasTarget(ply,players))then return end
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has brought ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
-        for i,pl in ipairs(players)do
+    end
+    if(!autobox:ValidateHasTarget(ply,players))then return end
+    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has brought ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
+    for i,pl in ipairs(players)do
         if(pl:InVehicle())then pl:ExitVehicle() end
-        
+
         if(pl:GetMoveType()==MOVETYPE_NOCLIP)then
             pl:SetPos(ply:GetPos()+ply:GetForward()*45)
         else
