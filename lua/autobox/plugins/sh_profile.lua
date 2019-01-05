@@ -14,11 +14,7 @@ end
 
 function PLUGIN:Call(ply,args)
     local players
-    if(#args>0)then
-        players = autobox:FindPlayers(args)
-    else
-        players = autobox:FindPlayers({ply:SteamID()})
-    end
+    local players = autobox:FindPlayers({unpack(args),ply})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
     net.Start("AAT_OpenProfile")
         net.WriteEntity(players[1])

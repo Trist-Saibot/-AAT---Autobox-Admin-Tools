@@ -15,7 +15,7 @@ function PLUGIN:Call(ply,args)
     if(!vehicle:IsValid() or !vehicle:IsVehicle()) then
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"You are not looking at a vehicle!")
     else
-        local players = autobox:FindPlayers({args[1] or ply:SteamID()})
+        local players = autobox:FindPlayers({args[1] or ply})
         if(!autobox:ValidateSingleTarget(ply,players))then return end
         if(vehicle:GetDriver():IsValid())then vehicle:GetDriver():ExitVehicle() end
         players[1]:EnterVehicle(vehicle)

@@ -27,7 +27,7 @@ META.GetName = META.Nick
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    local players = autobox:FindPlayers({args[1]})
+    local players = autobox:FindPlayers({args[1],ply})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
     local nick = table.concat(args," ",2)
     if(#nick>0)then

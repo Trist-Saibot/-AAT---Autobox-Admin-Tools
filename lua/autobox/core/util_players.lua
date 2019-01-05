@@ -14,7 +14,11 @@ function autobox:IsNameMatch(ply,str)
         end
     end
 end
+--Finds players with passed player names
 function autobox:FindPlayers(...)
+    --01/04/2019
+    --Now supports passing the local player in, will
+    --use the player if no args were found
     local matches = {}
     local args = unpack{...}
     for _, ply in ipairs(player.GetAll())do
@@ -23,6 +27,14 @@ function autobox:FindPlayers(...)
                 if(autobox:IsNameMatch(ply,v)) then table.insert(matches,ply) end
             end
         end        
+    end
+    if(#matches<1)then
+        for _,v in pairs(args)do
+            if(type(v)=="Player")then
+                table.insert(matches,v)
+                return matches                
+            end
+        end
     end
     return matches
 end

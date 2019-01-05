@@ -11,7 +11,7 @@ PLUGIN.usage = "[players]"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    local players = autobox:FindPlayers({args[1] or ply:SteamID()})
+    local players = autobox:FindPlayers({args[1] or ply})
     if(!autobox:ValidateHasTarget(ply,players))then return end
     for _,v in ipairs(players)do
         GAMEMODE:PlayerLoadout(v)

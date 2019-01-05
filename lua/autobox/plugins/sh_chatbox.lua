@@ -80,6 +80,7 @@ end
 
 --kidnaps the player's input for chat opening
 function PLUGIN:PlayerBindPress(ply,bind,pressed)
+    local team = false
     if(bind=="messagemode")then
         team = false
     elseif(bind=="messagemode2")then

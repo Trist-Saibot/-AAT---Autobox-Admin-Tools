@@ -11,12 +11,7 @@ PLUGIN.usage = "<players> [1/0]"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    local players
-    if(#args>0 and !(#args==1 and tonumber(args[1])))then
-        players = autobox:FindPlayers(args)
-    else
-        players = autobox:FindPlayers({ply:SteamID()})
-    end
+    local players = autobox:FindPlayers({unpack(args),ply})
     if(!autobox:ValidateHasTarget(ply,players))then return end
     local enabled = (tonumber(args[#args]) or 1) > 0
     for _,v in ipairs(players) do

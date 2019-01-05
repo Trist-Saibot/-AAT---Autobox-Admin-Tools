@@ -6,6 +6,8 @@ local PLUGIN = {}
 PLUGIN.title = "Chat Commands"
 PLUGIN.description = "Provides chat commands to run plugins."
 PLUGIN.author = "Trist"
+--this plugin was MAJORITY copied from Overv's in Evolve
+--It's pretty much a direct port into the new system
 
 --Thank you http://lua-users.org/lists/lua-l/2009-07/msg00461.html
 function PLUGIN:Levenshtein( s, t )

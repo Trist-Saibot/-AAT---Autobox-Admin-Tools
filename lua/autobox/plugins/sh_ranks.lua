@@ -10,7 +10,7 @@ PLUGIN.command = "rank"
 PLUGIN.usage = "<player> [rank]"
 
 function PLUGIN:Call(ply,args)
-    local players = autobox:FindPlayers({args[1] or ply:SteamID()})
+    local players = autobox:FindPlayers({unpack(args),ply})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
     if(#args<=1)then
         autobox:Notify(ply,autobox.colors.blue,players[1]:Nick(),autobox.colors.white," is ranked as ",autobox.colors.red,autobox:GetRankInfo(players[1]:AAT_GetRank()).RankName,autobox.colors.white,".")

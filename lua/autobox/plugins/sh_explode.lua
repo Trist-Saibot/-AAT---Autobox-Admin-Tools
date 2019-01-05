@@ -11,7 +11,7 @@ PLUGIN.usage = "[players]"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    local players = autobox:FindPlayers(args)
+    local players = autobox:FindPlayers({unpack(args),ply})
     if(!autobox:ValidateHasTarget(ply,players))then return end
     for _, v in ipairs(players) do
         local explosive = ents.Create( "env_explosion" )

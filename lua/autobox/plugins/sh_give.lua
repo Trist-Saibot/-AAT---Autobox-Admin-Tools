@@ -11,7 +11,7 @@ PLUGIN.usage = "<players> <weapon>"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    local players = autobox:FindPlayers(args)
+    local players = autobox:FindPlayers({args[1],ply})
     if(!autobox:ValidateHasTarget(ply,players))then return end
     local wep = args[#args]
     if(#args<2)then
