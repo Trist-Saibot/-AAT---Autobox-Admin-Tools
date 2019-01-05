@@ -13,7 +13,7 @@ function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
     local players = autobox:FindPlayers({args[1]})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
-    if(!autobox:ValidateBetterThan(ply,players[1]))then return end
+    if(!autobox:ValidateBetterThanOrEqual(ply,players[1]))then return end
 
     local reason = table.concat(args," ",2) or ""
     if(#reason==0 or reason == "No reason")then
