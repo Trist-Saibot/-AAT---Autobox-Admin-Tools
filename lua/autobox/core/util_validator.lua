@@ -38,6 +38,15 @@ function autobox:ValidateBetterThan(ply,target)
     end
 end
 
+function autobox:ValidateBetterThanOrEqual(ply,target)
+    if(ply:AAT_BetterThanOrEqual(target))then
+        return true
+    else
+        autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
+        return false
+    end
+end
+
 function autobox:ValidateNumber(ply,value)
     if(tonumber(value))then
         return true

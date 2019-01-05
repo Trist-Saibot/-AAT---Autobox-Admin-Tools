@@ -35,7 +35,7 @@ function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
     local players = autobox:FindPlayers({args[1]})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
-    if(!autobox:ValidateBetterThan(ply,players[1]))then return end    
+    if(!autobox:ValidateBetterThanOrEqual(ply,players[1]))then return end    
     autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has gone to ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     if ( ply:InVehicle() ) then ply:ExitVehicle() end
     if ( ply:GetMoveType() == MOVETYPE_NOCLIP) then

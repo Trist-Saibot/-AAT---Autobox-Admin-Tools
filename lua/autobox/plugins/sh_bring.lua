@@ -36,7 +36,7 @@ function PLUGIN:Call(ply,args)
     local unfilteredPlayers = autobox:FindPlayers(args)
     local players = {}
     for k,v in ipairs(unfilteredPlayers)do
-        if(ply:AAT_BetterThan(v:AAT_GetRank()))then
+        if(ply:AAT_BetterThanOrEqual(v:AAT_GetRank()))then
             table.insert(players,v)
         end
     end
