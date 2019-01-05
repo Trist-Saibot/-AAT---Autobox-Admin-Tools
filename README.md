@@ -1,4 +1,4 @@
-[AAT] - Autobox Admin Tools\n
+[AAT] - Autobox Admin Tools
 Written by Trist Saibot (Tristan Sladek)
 
 A set of administrative tools for use on The Autobox GMOD server
