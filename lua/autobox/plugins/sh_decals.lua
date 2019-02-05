@@ -10,7 +10,7 @@ PLUGIN.command = "decals"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has cleaned up the decals.") 
+    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has cleaned up the decals.")
     for _,v in ipairs(player.GetAll())do
         v:ConCommand("r_cleardecals")
     end

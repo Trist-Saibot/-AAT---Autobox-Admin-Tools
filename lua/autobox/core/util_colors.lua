@@ -7,7 +7,7 @@ function autobox:HexToColor(hex)
 	local l = string.len(hex)
 	if(l>0)then --remove # if it has one
 		if(string.sub(hex,1,1)=="#")then
-			hex=string.sub(hex,2,l) 
+			hex=string.sub(hex,2,l)
 			l=l-1
 		end
 	end
@@ -22,14 +22,14 @@ function autobox:HexToColor(hex)
 			return Color(tonumber(r),tonumber(g),tonumber(b),tonumber(a))
 		end
 	end
-	return nil	
+	return nil
 end
 function autobox:ColorDarken(color,n)
 	return Color(color.r*n,color.g*n,color.b*n)
 end
 function autobox:MixColor(color1,color2,ratio)
 	ratio=ratio+.1
-	return Color(color1.r*ratio+color2.r*-ratio,color1.g*ratio+color2.g*-ratio,color1.b*ratio+color2.b*-ratio)	
+	return Color(color1.r*ratio+color2.r*-ratio,color1.g*ratio+color2.g*-ratio,color1.b*ratio+color2.b*-ratio)
 end
 
 autobox.colors = {}
@@ -42,20 +42,20 @@ autobox.colors.tan = Color(237,219,189)
 autobox.colors.tan2 = Color(226,209,181)
 autobox.colors.brown = Color(66,51,48)
 autobox.colors.pink = autobox:HexToColor('FF69B4')
-autobox.colors.discord = 
+autobox.colors.discord =
 {
 	autobox:HexToColor('#7289DA'),
 	autobox:HexToColor('#99AAB5'),
 	autobox:HexToColor('#2C2F33'),
 	autobox:HexToColor('#23272A')
 }
-autobox.colors.discordAlt = 
+autobox.colors.discordAlt =
 {
 	autobox:HexToColor('#536672'),
 	autobox:HexToColor('#3E4248')
 }
 
-autobox.colors.db32 = 
+autobox.colors.db32 =
 {"FF000000",
 "FF222034",
 "FF45283C",

@@ -25,19 +25,19 @@ function PLUGIN:Call(ply,args)
                     v:SetNWBool("AAT_Ragdolled",false)
                     v:SetNoTarget(false)
                     v:SetParent()
-                    v:Spawn()                    
+                    v:Spawn()
                 end)
                 doll:SetModel(v:GetModel())
                 doll:SetPos(v:GetPos())
                 doll:SetAngles(v:GetAngles())
                 doll:Spawn()
                 doll:Activate()
-                
+
 
                 v:Spectate(OBS_MODE_CHASE)
                 v:SpectateEntity(doll)
                 v:SetParent(doll)
-                
+
                 v:SetNWEntity("AAT_Ragdoll",doll)
             end
         else
@@ -70,7 +70,7 @@ end
 function PLUGIN:PlayerSpawn(ply)
     local ragdoll = ply:GetNWEntity("AAT_Ragdoll",nil)
     if(IsValid(ragdoll))then
-        ply:SetPos(ragdoll:GetPos()+Vector(0,0,10))        
+        ply:SetPos(ragdoll:GetPos()+Vector(0,0,10))
         ragdoll:Remove()
         ply:SetNWEntity("AAT_Ragdoll",nil)
     end

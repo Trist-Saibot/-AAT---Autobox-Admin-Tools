@@ -19,7 +19,7 @@ function PLUGIN:Call(ply,args)
     if(#players==1 and players[1]==ply)then
         autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has respawned themself.")
     else
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has respawned ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")        
+        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has respawned ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     end
 end
 

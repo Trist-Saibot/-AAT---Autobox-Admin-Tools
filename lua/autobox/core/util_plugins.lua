@@ -18,14 +18,14 @@ function autobox:LoadPlugins()
         elseif(SERVER) then
             if(prefix != "cl") then
                 include(path..v)
-                if(autobox.debug)then table.insert(autobox.debugPrint,v) end            
+                if(autobox.debug)then table.insert(autobox.debugPrint,v) end
             end
             if(prefix=="sh") then
                 AddCSLuaFile(path..v)
-            end                        
-        end        
-    end 
-    if(autobox.debug)then autobox:PrettyConsole("Plugins Loaded",unpack(autobox.debugPrint)) end          
+            end
+        end
+    end
+    if(autobox.debug)then autobox:PrettyConsole("Plugins Loaded",unpack(autobox.debugPrint)) end
 end
 
 --this works because the logic of loading plugins will call RegisterPlugin inside, and refer back to this function
@@ -34,10 +34,10 @@ function autobox:RegisterPlugin(plugin)
     local prefix = string.Left(currentPlugin,string.find(currentPlugin,"_")-1)
     for k,v in pairs(autobox.plugins)do --avoids adding duplicate plugins
         if(v.title==plugin.title)then
-            return            
-        end            
+            return
+        end
     end
-    if(plugin.perm and SERVER)then 
+    if(plugin.perm and SERVER)then
         autobox:SQL_AddPerm(plugin.perm)
     end
     if(!plugin.title)then plugin.title = "" end
@@ -52,12 +52,13 @@ function autobox:FindPlugin(str)
         if(string.lower(str) == string.lower(v.title))then
             return v
         end
-    end    
+    end
     return nil
 end
 
 if(SERVER)then
     util.AddNetworkString("AAT_ReloadPlugin")
+    util.AddNetworkString("AAT_CallPlugin")
 end
 
 function autobox:ReloadPlugin(plugin)
@@ -72,22 +73,22 @@ function autobox:ReloadPlugin(plugin)
             if(v.title==plugin.title)then
                 table.remove(autobox.plugins,k)
                 break
-            end            
-        end        
+            end
+        end
         if(CLIENT and (prefix=="sh")) then
             include(path..plugin.file)
         elseif(SERVER) then
             if(prefix != "cl") then
-                include(path..plugin.file)            
+                include(path..plugin.file)
             end
             if(prefix=="sh") then
-                AddCSLuaFile(path..plugin.file)    
-                net.Start("AAT_ReloadPlugin")            
+                AddCSLuaFile(path..plugin.file)
+                net.Start("AAT_ReloadPlugin")
                     net.WriteTable({T = plugin.title,P = path,F = plugin.file})
                 net.Broadcast()
-            end                        
-        end        
-    end    
+            end
+        end
+    end
 end
 
 if(SERVER)then
@@ -110,25 +111,38 @@ if(SERVER)then
             local prefix = string.Left(v,string.find(v,"_")-1)
             currentPlugin = v
             if(CLIENT and (prefix=="sh")) then
-                include(path..v)                
+                include(path..v)
             elseif(SERVER) then
                 if(prefix != "cl") then
-                    include(path..v)                    
+                    include(path..v)
                 end
                 if(prefix != "sv") then
                     AddCSLuaFile(path..v)
-                    net.Start("AAT_ReloadPlugin")            
+                    net.Start("AAT_ReloadPlugin")
                         net.WriteTable({P = path,F = v})
-                    net.Broadcast()                    
-                end                        
+                    net.Broadcast()
+                end
             end
-            autobox:Notify(autobox.colors.white,"The plugin ",autobox.colors.red,v,autobox.colors.white," was Hotloaded.")        
+            autobox:Notify(autobox.colors.white,"The plugin ",autobox.colors.red,v,autobox.colors.white," was Hotloaded.")
         end
     end
+    function autobox:CallPlugin(plugin,ply,args)
+        local plugin = autobox:FindPlugin(plugin)
+        if(plugin and ply:IsValid() and plugin.Call)then
+            plugin:Call(ply,args)
+        else
+            autobox:DebugPrint(plugin.." not found.")
+        end
+    end
+    net.Receive("AAT_CallPlugin",function(len,ply)
+        local plugin = net.ReadString(plugin)
+        local args = net.ReadTable() or nil
+        autobox:CallPlugin(plugin,ply,args)
+    end)
 end
 
 if(CLIENT)then
-    net.Receive("AAT_ReloadPlugin",function() 
+    net.Receive("AAT_ReloadPlugin",function()
         local data = net.ReadTable()
         currentPlugin = data.F
         if(data.T)then
@@ -139,11 +153,17 @@ if(CLIENT)then
                     end
                     table.remove(autobox.plugins,k)
                     break
-                end            
+                end
             end
         end
         include(data.P..data.F)
     end)
+    function autobox:CallPlugin(plugin,args)
+        net.Start("AAT_CallPlugin")
+        net.WriteString(plugin)
+        net.WriteTable(args)
+        net.SendToServer()
+    end
 end
 
 --This allows plugins that have hook calls to run their hooks
@@ -161,8 +181,8 @@ hook.Call = function(name,gm,...)
 				autobox:Notify( autobox.colors.red, "Hook '" .. name .. "' in plugin '" .. v.title .. "' failed with error:" )
 				autobox:Notify( autobox.colors.red, returnValues[2] )
 			end
-        end    
-    end    
+        end
+    end
     --Running the actual hook logic
-    return ABX_HookCall(name,gm,...)    
+    return ABX_HookCall(name,gm,...)
 end

@@ -20,7 +20,7 @@ function PLUGIN:Call(ply,args)
         autobox:SyncPlaytime()
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"Invalid playtime specified.")
-    end    
+    end
 end
 
 autobox:RegisterPlugin(PLUGIN)

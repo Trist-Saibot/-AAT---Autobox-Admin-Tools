@@ -17,7 +17,7 @@ function PLUGIN:Call(ply,args)
             v:ConCommand("play "..sound)
         end
     else
-        autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"Sound file not found!") 
+        autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"Sound file not found!")
     end
 end
 

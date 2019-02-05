@@ -31,13 +31,13 @@ end
 function PLUGIN:GetArguments( msg )
 	local args = {}
 	local first = true
-	
+
 	for match in string.gmatch( msg, "[^ ]+" ) do
 		if ( first ) then first = false else
 			table.insert( args, match )
 		end
 	end
-	
+
 	return args
 end
 
@@ -46,20 +46,20 @@ function PLUGIN:PlayerSay( ply, msg )
 		local command = self:GetCommand( msg )
 		local args = self:GetArguments( msg )
 		local closest = { dist = 99, plugin = "" }
-		
+
         if ( #command > 0 ) then
 			for _, plugin in ipairs( autobox.plugins ) do
 				if ( plugin.command == command or ( type( plugin.command ) == "table" and table.HasValue( plugin.command, command ) ) ) then
-                    autobox.silentNotify = string.Left( msg, 1 ) == "@"			
+                    autobox.silentNotify = string.Left( msg, 1 ) == "@"
                         local res, ret = pcall( plugin.Call, plugin, ply, args, string.sub( msg, #command + 3 ), command )
-                    autobox.silentNotify = false				
-					
+                    autobox.silentNotify = false
+
 					if ( !res ) then
 						autobox:Notify( autobox.colors.red, "Plugin '" .. plugin.title .. "' failed with error:" )
 						autobox:Notify( autobox.colors.red, ret )
 					end
 					return ""
-				elseif ( plugin.command ) then					
+				elseif ( plugin.command ) then
 					local dist = self:Levenshtein( command, type( plugin.command ) == "table" and plugin.command[1] or plugin.command )
 					if ( dist < closest.dist ) then
 						closest.dist = dist
@@ -67,10 +67,10 @@ function PLUGIN:PlayerSay( ply, msg )
 					end
                 end
             end
-			
+
 			if ( closest.dist <= 0.25 * #closest.plugin.command ) then
 				local res, ret = pcall( closest.plugin.Call, closest.plugin, ply, args )
-				
+
 				if ( !res ) then
 					autobox:Notify( autobox.colors.red, "Plugin '" .. closest.plugin.title .. "' failed with error:" )
 					autobox:Notify( autobox.colors.red, ret )

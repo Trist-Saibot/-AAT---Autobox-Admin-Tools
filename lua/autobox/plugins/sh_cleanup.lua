@@ -23,7 +23,7 @@ function PLUGIN:Call(ply,args)
                     ent:Remove()
                     break
                 end
-            end            
+            end
         end
         autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has cleaned up the entities of ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     end

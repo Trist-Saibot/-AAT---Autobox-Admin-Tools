@@ -30,9 +30,9 @@ function PLUGIN:Call(ply,args)
             e:EmitSound("ambient/explosions/explode_4.wav",500,500)
 
             v:StopParticles()
-            v:Kill()    
+            v:Kill()
             v:SetFrags(v:Frags()+1)
-        end)        
+        end)
     end
     autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has rocketed ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
 end

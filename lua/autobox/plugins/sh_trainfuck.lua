@@ -33,7 +33,7 @@ function PLUGIN:Call(ply,args)
         if(IsValid(obj))then
             obj:EnableGravity(false)
             obj:EnableCollisions(false)
-            obj:SetVelocity(tDir*100000)            
+            obj:SetVelocity(tDir*100000)
         end
         timer.Simple(0.6,function()
             local dmg = DamageInfo()
@@ -42,7 +42,7 @@ function PLUGIN:Call(ply,args)
             dmg:SetInflictor(train)
             dmg:SetAttacker(train)
             if(v:HasGodMode() or v:Health()==0)then
-                v:TakeDamageInfo(dmg)            
+                v:TakeDamageInfo(dmg)
                 v:Kill()
             end
             v:TakeDamageInfo(dmg)

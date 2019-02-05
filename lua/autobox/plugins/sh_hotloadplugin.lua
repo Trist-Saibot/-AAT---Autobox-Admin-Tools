@@ -10,7 +10,7 @@ PLUGIN.perm = "Plugin Hotloading"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    autobox:HotloadPlugins()    
+    autobox:HotloadPlugins()
 end
 
 autobox:RegisterPlugin(PLUGIN)

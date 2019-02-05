@@ -14,14 +14,14 @@ if(SERVER)then
         resource.AddFile( "materials/autobox/ui/"..v)
     end
 end
-if(CLIENT)then --setup client settings    
+if(CLIENT)then --setup client settings
     PLUGIN.active = 1
     PLUGIN.scrollback = 50 --how many messages we save before we cull
     PLUGIN.alphaShow = 255
     PLUGIN.alphaHide = 0
     PLUGIN.fadeTime = 5
     PLUGIN.alpha = PLUGIN.alphaHide
-    
+
     PLUGIN.chatTabs = {}
     PLUGIN.chatTabs[1] = {}
     PLUGIN.chatTabs[1].Name = "General"
@@ -95,7 +95,7 @@ end
 if(CLIENT)then
     --make sure the tab closes when it needs to
     function PLUGIN:Think()
-        if(self.chatOpen and IsValid(self.Frame))then            
+        if(self.chatOpen and IsValid(self.Frame))then
             if(!self.Frame:HasHierarchicalFocus())then
                 hook.Run("FinishChat")
             end
@@ -104,7 +104,7 @@ if(CLIENT)then
                 local px,py,w,h = self.Frame:GetBounds()
                 if(x<=px or x>=px+w or y<=py or y>=py+h)then
                     hook.Run("FinishChat")
-                end                
+                end
             end
         end
     end
@@ -123,11 +123,11 @@ if(CLIENT)then
             table.remove(args[1])
             autobox.OnChatText(unpack(args))
         else
-            autobox.OnChatText(...)    
+            autobox.OnChatText(...)
         end
     end
-    
-    
+
+
 
     --our custom chat function
     function PLUGIN:AAT_OnChatText(...)
@@ -154,16 +154,16 @@ if(CLIENT)then
                     end
                     if(self.active == k)then
                         self.ScrollPanel:AddChatMessage(args,mdata)
-                        
+
                         --I have no idea why, but for some reason scrolling immediately scrolls to the top and breaks
                         timer.Simple(0.01,function()
                             self.ScrollPanel:ScrollToEnd()
-                        end)                        
-                    end                    
+                        end)
+                    end
                 end
             end
         end
-    end        
+    end
 
     --create the frame when we start
     function PLUGIN:InitializeChatWindow()
@@ -173,16 +173,16 @@ if(CLIENT)then
         self.Frame:ShowCloseButton(false)
         self.Frame:SetTitle("")
         self.Frame:SetDraggable(false)
-        
-        function self.Frame:Paint(w,h)                
+
+        function self.Frame:Paint(w,h)
             surface.SetDrawColor(ColorAlpha(autobox.colors.discord[4],PLUGIN.alpha))
             surface.DrawRect(3,3,w-6,h-6)
-            
+
             surface.SetDrawColor(ColorAlpha(autobox.colors.discordAlt[1],PLUGIN.alpha))
             surface.DrawRect(3,24,w-6,252)
-            
-            PLUGIN:DrawBorder(0,0,w,h,PLUGIN.alpha)   
-        end 
+
+            PLUGIN:DrawBorder(0,0,w,h,PLUGIN.alpha)
+        end
         function self.Frame:PaintOver(w,h)
             if(PLUGIN.chatOpen and PLUGIN.TextBox:HasFocus())then
                 local font = "Trebuchet18"
@@ -195,37 +195,37 @@ if(CLIENT)then
                     if(cx+ux>longest)then longest = cx+ux end
                     th = cy
                 end
-                
+
                 local y=h-#PLUGIN.suggestions*th-31
                 local x=8
-                
+
                 if(#PLUGIN.suggestions>0)then
                     surface.SetDrawColor(autobox.colors.discordAlt[1])
                     surface.DrawRect(3,y,longest+15,#PLUGIN.suggestions*th)
                     surface.SetDrawColor(autobox.colors.discord[4])
                     surface.DrawRect(4,y+1,longest+13,#PLUGIN.suggestions*th)
                 end
-        
+
                 for _,v in ipairs(PLUGIN.suggestions)do
                     local sx,sy = surface.GetTextSize(v.command)
                     draw.SimpleText(v.command,font,x,y,autobox.colors.white)
                     draw.SimpleText(" "..v.usage or "",font,x+sx,y,autobox.colors.red)
                     y=y+th
-                end                
-            end             
+                end
+            end
         end
-        
+
         self.ScrollPanel = vgui.Create("DScrollPanel",self.Frame)
         self.ScrollPanel.Messages = {}
         self.ScrollPanel:SetPos(3,25)
-        self.ScrollPanel:SetSize(self.Frame:GetWide()-6,250)        
+        self.ScrollPanel:SetSize(self.Frame:GetWide()-6,250)
         self:CustomVBar(self.ScrollPanel)
         function self.ScrollPanel:ScrollToEnd()
             if(#self.Messages>1 and self.Messages[#self.Messages])then
                 self:ScrollToChild(self.Messages[#self.Messages])
             end
         end
-        function self.ScrollPanel:Paint(w,h)                
+        function self.ScrollPanel:Paint(w,h)
             surface.SetDrawColor(ColorAlpha(autobox.colors.discordAlt[2],PLUGIN.alpha))
             surface.DrawRect(0,0,w,h)
         end
@@ -233,7 +233,7 @@ if(CLIENT)then
             local color = color_white
             local DPanel = self:Add("DPanel")
             DPanel.mdata = mdata
-            DPanel:Dock(TOP)            
+            DPanel:Dock(TOP)
             DPanel:DockMargin(5,0,35,0)
             DPanel.wide = self:GetWide()-40
             DPanel.y = 0
@@ -256,7 +256,7 @@ if(CLIENT)then
                     self.y=self.y+20
                     self:SetSize(self.wide,self.y+20)
                 end
-                IconPanel:SetSize(16,16)                
+                IconPanel:SetSize(16,16)
                 IconPanel:SetPos(self.x+2,self.y+2)
                 function IconPanel:Paint(w,h)
                     surface.SetMaterial(icon)
@@ -274,7 +274,7 @@ if(CLIENT)then
                 DLabel:SetText("")
                 DLabel:SetColor(color)
                 function DLabel:Paint(w,h)
-                    draw.TextShadow({pos={0,0},text=text,font=self:GetFont(),color=self:GetColor()},1)                    
+                    draw.TextShadow({pos={0,0},text=text,font=self:GetFont(),color=self:GetColor()},1)
                 end
                 local x = DLabel:GetWide()
                 if(self.x+x>self.wide-15)then
@@ -294,7 +294,7 @@ if(CLIENT)then
                                 self:AddTextElem(table.concat(words," ",k,#words),color,true)
                                 break
                             end
-                        end                        
+                        end
                     else
                         local letters = string.Split(text,"")
                         for k,v in pairs(letters)do
@@ -312,7 +312,7 @@ if(CLIENT)then
                                 break
                             end
                         end
-                        
+
                     end
                 else
                     DLabel:SetPos(self.x,self.y)
@@ -334,9 +334,9 @@ if(CLIENT)then
                             tmp:SetTooltip(rankData.RankName)
                         else
                             tmp:SetTooltip("Console")
-                        end                        
+                        end
                     elseif(mdata.Player:IsValid() and PLUGIN.silkicons[autobox:GetRankInfo(mdata.Player:AAT_GetRank()).Icon])then
-                        local rankData = autobox:GetRankInfo(mdata.Player:AAT_GetRank()).Icon                        
+                        local rankData = autobox:GetRankInfo(mdata.Player:AAT_GetRank()).Icon
                         tmp = DPanel:AddIcon(PLUGIN.silkicons[rankData.Icon])
                         tmp:SetTooltip(rankData.RankName)
                     else
@@ -357,7 +357,7 @@ if(CLIENT)then
                         tmp:SetTooltip(mdata.IconTooltip)
                     else
                         tmp:SetTooltip("System")
-                    end                    
+                    end
                 elseif(mdata.Type == "System")then
                     local tmp = DPanel:AddIcon(PLUGIN.silkicons["world"])
                     tmp:SetTooltip("System")
@@ -365,7 +365,7 @@ if(CLIENT)then
             else
                 local tmp = DPanel:AddIcon(PLUGIN.silkicons["world"])
                 tmp:SetTooltip("System")
-            end            
+            end
             for _,v in pairs(args)do
                 if(type(v)=="string")then
                     local words = string.Split(v,":")
@@ -376,9 +376,9 @@ if(CLIENT)then
                             if(string.len(temp)>0)then
                                 DPanel:AddTextElem(temp,color)
                                 temp = ""
-                            end                            
-                            DPanel:AddIcon(PLUGIN.silkicons[s])                            
-                            flag = false                           
+                            end
+                            DPanel:AddIcon(PLUGIN.silkicons[s])
+                            flag = false
                         else
                             if(!flag)then flag = true else temp=temp..":" end
                             temp=temp..s
@@ -393,16 +393,16 @@ if(CLIENT)then
                         color=v
                     end
                 else
-                    DPanel:AddTextElem(tostring(v),color)                    
+                    DPanel:AddTextElem(tostring(v),color)
                 end
             end
             table.insert(self.Messages,DPanel)
             if(#self.Messages>PLUGIN.scrollback)then
                 self.Messages[1]:Remove()
                 table.remove(self.Messages,1)
-            end            
+            end
         end
-        
+
         self.TextBox = vgui.Create("DTextEntry",self.Frame)
         self.TextBox:SetSize(self.Frame:GetWide()-25-8,25)
         self.TextBox:SetPos(5,275)
@@ -414,16 +414,16 @@ if(CLIENT)then
             if(code==KEY_ESCAPE)then
                 hook.Run("FinishChat")
                 gui.HideGameUI()
-                return true               
+                return true
             elseif(code==KEY_ENTER)then
                 if(string.Trim(self:GetText())!="")then
-                    LocalPlayer():ConCommand("say "..self:GetText())                    
+                    LocalPlayer():ConCommand("say "..self:GetText())
                 end
                 hook.Run("FinishChat")
-                return true               
+                return true
             elseif(code==KEY_TAB)then
-                self:SetText(hook.Run("OnChatTab",self:GetText()))                
-                return true               
+                self:SetText(hook.Run("OnChatTab",self:GetText()))
+                return true
             end
         end
         self.TextBox.OldSetText = self.TextBox.SetText
@@ -450,7 +450,7 @@ if(CLIENT)then
         self.Emote:SetText("")
         function self.Emote:Paint(w,h)
             surface.SetMaterial(PLUGIN.silkicons["emoticon_happy"])
-            surface.SetDrawColor(ColorAlpha(color_white,PLUGIN.alpha))            
+            surface.SetDrawColor(ColorAlpha(color_white,PLUGIN.alpha))
             surface.DrawTexturedRect(4,4,16,16)
         end
         function self.Emote:DoClick()
@@ -461,7 +461,7 @@ if(CLIENT)then
                 PLUGIN.EmoteFrame:RequestFocus()
             end
         end
-        
+
         self.EmoteFrame = vgui.Create("DScrollPanel",self.Frame)
         self.EmoteFrame:SetSize(300,200)
         self.EmoteFrame.locx,self.EmoteFrame.locy=self.Emote:GetPos()
@@ -502,7 +502,7 @@ if(CLIENT)then
         end
 
         local x = 0
-        
+
         --custom chat tabs
         for k,v in pairs(self.chatTabs)do
             local DButton = vgui.Create("DButton",self.Frame)
@@ -519,11 +519,11 @@ if(CLIENT)then
 
                 if(PLUGIN.active==k)then
                     color = ColorAlpha(autobox.colors.discordAlt[2],PLUGIN.alpha)
-                else                    
-                    color = ColorAlpha(autobox.colors.discord[3],PLUGIN.alpha)                    
+                else
+                    color = ColorAlpha(autobox.colors.discord[3],PLUGIN.alpha)
                 end
                 draw.RoundedBox(7,1,1,w-2,h*2+1,color)
-                draw.TextShadow({text=v.Name,pos={10,5},color=ColorAlpha(color_white,PLUGIN.alpha)},1,PLUGIN.alpha)                
+                draw.TextShadow({text=v.Name,pos={10,5},color=ColorAlpha(color_white,PLUGIN.alpha)},1,PLUGIN.alpha)
             end
             function DButton:DoClick()
                 PLUGIN.active = k
@@ -536,7 +536,7 @@ if(CLIENT)then
                     --I have no idea why, but for some reason scrolling immediately scrolls to the top and breaks
                     timer.Simple(0.01,function()
                         PLUGIN.ScrollPanel:ScrollToEnd()
-                    end) 
+                    end)
                 end
             end
         end
@@ -547,7 +547,7 @@ if(CLIENT)then
         self.Settings:SetText("")
         function self.Settings:Paint(w,h)
             surface.SetMaterial(PLUGIN.silkicons["gear"])
-            surface.SetDrawColor(ColorAlpha(color_white,PLUGIN.alpha))            
+            surface.SetDrawColor(ColorAlpha(color_white,PLUGIN.alpha))
             surface.DrawTexturedRect(0,0,16,16)
             --surface.DrawRect(0,0,w,h)
         end
@@ -580,7 +580,7 @@ function PLUGIN:ChatTextChanged(str)
                 table.insert(self.suggestions,{command = string.sub(str,1,1)..v.command,usage = v.usage or ""})
             end
         end
-        table.SortByMember(self.suggestions,"command",function(a,b)return a<b end)        
+        table.SortByMember(self.suggestions,"command",function(a,b)return a<b end)
     end
 end
 function PLUGIN:OnChatTab(str)
@@ -628,7 +628,7 @@ if(CLIENT)then
         surface.DrawTexturedRectUV(x,y+h-16,16,16,0,0.5,0.5,1) --bottom left
         surface.DrawTexturedRectUV(x+w-16,y,16,16,0.5,0,1,0.5) --top right
         surface.DrawTexturedRectUV(x+w-16,y+h-16,16,16,0.5,0.5,1,1) --bottom right
-        
+
         surface.DrawTexturedRectUV(x+16,y,w-32,16,0.4375,0,0.5625,0.5) --top middle
         surface.DrawTexturedRectUV(x,y+16,16,h-32,0,0.4375,0.5,0.5625) --left middle
         surface.DrawTexturedRectUV(x+w-16,y+16,16,h-32,0.5,0.4375,1,0.5625) --right middle
@@ -643,7 +643,7 @@ if(CLIENT)then
         surface.DrawTexturedRectUV(x,y,s,s,0,0,0.5,0.5) --top left
         surface.DrawTexturedRectUV(x,y+h-s,s,s,0,0.5,0.5,1) --bottom left
         surface.DrawTexturedRectUV(x+w-s,y,s,s,0.5,0,1,0.5) --top right
-        surface.DrawTexturedRectUV(x+w-s,y+h-s,s,s,0.5,0.5,1,1) --bottom right        
+        surface.DrawTexturedRectUV(x+w-s,y+h-s,s,s,0.5,0.5,1,1) --bottom right
         surface.DrawTexturedRectUV(x,y+s,s,h-s*2,0,0.4375,0.5,0.5) --left middle
         surface.DrawTexturedRectUV(x+w-s,y+s,s,h-s*2,0.5,0.4375,1,0.5) --right middle
         surface.SetAlphaMultiplier(1)
@@ -652,7 +652,7 @@ if(CLIENT)then
         local vbar = panel:GetVBar()
         vbar:SetHideButtons(true)
         vbar:SetWide(16)
-        function vbar:Paint(w,h)            
+        function vbar:Paint(w,h)
             surface.SetDrawColor(ColorAlpha(autobox.colors.discord[4],PLUGIN.alpha))
             surface.DrawRect(7,4,2,h-8)
         end
@@ -678,7 +678,7 @@ if(CLIENT)then
                 surface.SetDrawColor(autobox.colors.discord[4])
                 surface.DrawRect(8,12,w-16,1)
             end
-            
+
             local DPanel = vgui.Create("DPanel",parent)
             DPanel:SetSize(w,h)
             DPanel:SetPos(DSlider:GetPos())
@@ -686,7 +686,7 @@ if(CLIENT)then
             function DPanel:Paint(w,h)
                 draw.TextShadow({text=text,pos={w,h/2.25},xalign=TEXT_ALIGN_RIGHT,yalign=TEXT_ALIGN_CENTER},1)
             end
-            
+
             return DSlider
         end
         return nil
@@ -701,10 +701,10 @@ function PLUGIN:OpenChatSettings()
     self.SettingsFrame = vgui.Create("DFrame")
     self.SettingsFrame:SetSize(600,400)
     self.SettingsFrame:MakePopup()
-    self.SettingsFrame:Center()    
+    self.SettingsFrame:Center()
     --self.SettingsFrame:ShowCloseButton(false)
     self.SettingsFrame:SetTitle("")
-    function self.SettingsFrame:Paint(w,h)        
+    function self.SettingsFrame:Paint(w,h)
         surface.SetDrawColor(autobox.colors.discord[4])
         surface.DrawRect(3,3,w-6,22)
         surface.SetDrawColor(autobox.colors.discord[1])
@@ -737,10 +737,10 @@ function PLUGIN:OpenChatSettings()
         end
     end
 end
-function PLUGIN:HUDPaint()    
+function PLUGIN:HUDPaint()
     if(IsValid(self.SettingsFrame))then
         surface.SetDrawColor(autobox.colors.pink)
-        surface.DrawRect(0,0,1920,1080)        
+        surface.DrawRect(0,0,1920,1080)
     end
 end
 

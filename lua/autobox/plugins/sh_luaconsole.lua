@@ -24,7 +24,7 @@ if(SERVER)then
         local err func = CompileString(str,ply:SteamID().." compiled code'")
         if(!err)then
             if(mode=="SERVER" or mode=="SHARED")then
-                local succ info = pcall(func)                    
+                local succ info = pcall(func)
             end
             if(mode=="CLIENT" or mode=="SHARED")then
                 net.Start('aat_lua_console')
@@ -36,7 +36,7 @@ if(SERVER)then
                 net.WriteString(str)
                 net.Send(ply)
             end
-        end        
+        end
     end)
 end
 
@@ -47,7 +47,7 @@ if(CLIENT)then
         local succ info = pcall(func)
     end)
     net.Receive('aat_start_console',function()
-        local DP = vgui.Create("DFrame")    
+        local DP = vgui.Create("DFrame")
         DP:SetSize( 600, 300 )
         DP:Center()
         DP:SetTitle( "Lua Console" )

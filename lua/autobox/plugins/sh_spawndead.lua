@@ -18,7 +18,7 @@ function PLUGIN:Call(ply,args)
         end
     end
     if(#players>0)then
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has respawned ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")        
+        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has respawned ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"No players are currently dead.")
     end

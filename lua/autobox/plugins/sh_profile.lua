@@ -13,7 +13,6 @@ if(SERVER)then
 end
 
 function PLUGIN:Call(ply,args)
-    local players
     local players = autobox:FindPlayers({unpack(args),ply})
     if(!autobox:ValidateSingleTarget(ply,players))then return end
     net.Start("AAT_OpenProfile")
@@ -29,15 +28,18 @@ end
 
 function PLUGIN:OpenProfile(player)
     PLUGIN:CloseProfile()
-    PLUGIN.profile = vgui.Create("DFrame")    
+    PLUGIN.profile = vgui.Create("DFrame")
     PLUGIN.profile:SetSize(720,480)
-    PLUGIN.profile:SetPos((ScrW()-PLUGIN.profile:GetWide())/2,(ScrH()-PLUGIN.profile:GetTall())/2)
+    PLUGIN.profile:Center()
     PLUGIN.profile:SetTitle("")
     PLUGIN.profile:SetDraggable(true)
     PLUGIN.profile:MakePopup()
     function PLUGIN.profile:Paint(w,h)
         surface.SetDrawColor(autobox.colors.brown)
-        surface.DrawRect(0,0,w,h)        
+        surface.DrawRect(0,0,w,h)
+    end
+    function PLUGIN.profile:Think()
+        if(!player:IsValid())then PLUGIN:CloseProfile() end
     end
 
     local Frame = vgui.Create("DPanel",PLUGIN.profile)
@@ -45,13 +47,14 @@ function PLUGIN:OpenProfile(player)
     Frame:SetPos(0,25)
     function Frame:Paint(w,h)
         surface.SetDrawColor(autobox.colors.tan)
-        surface.DrawRect(0,0,w,h)        
+        surface.DrawRect(0,0,w,h)
     end
 
     local InfoBox = vgui.Create("DPanel",Frame)
     InfoBox:SetSize(300,128+8)
     InfoBox:SetPos(150,10)
     function InfoBox:Paint(w,h)
+        if(!player:IsValid())then return end
         surface.SetDrawColor(autobox.colors.brown)
         surface.DrawRect(0,0,w,h)
         surface.SetDrawColor(autobox.colors.tan2)
@@ -94,7 +97,7 @@ function PLUGIN:OpenProfile(player)
     Avatar:SetPos(4,4)
     Avatar:SetPlayer(player,128)
 
-    if(autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin"))then        
+    if(autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin"))then
         local AdminBox = vgui.Create("DPanel",Frame)
         AdminBox:SetSize(200,98)
         AdminBox:SetPos(Frame:GetWide()-210,10)
@@ -103,7 +106,7 @@ function PLUGIN:OpenProfile(player)
             surface.DrawRect(0,0,w,h)
             draw.DrawText("Admin Panel","TristText_Bold",w/2,0,autobox.colors.white,TEXT_ALIGN_CENTER)
         end
-        
+
         local DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,22)
@@ -118,9 +121,11 @@ function PLUGIN:OpenProfile(player)
             draw.DrawText("Kick","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            RunConsoleCommand("say","!trainfuck "..player:SteamID())
+            if(player:IsValid())then
+                autobox:CallPlugin("kick",{player})
+            end
         end
-        
+
         DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,46)
@@ -132,12 +137,12 @@ function PLUGIN:OpenProfile(player)
                 surface.SetDrawColor(autobox.colors.tan)
             end
             surface.DrawRect(0,0,w,h)
-            draw.DrawText("Ban","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
+            draw.DrawText("Explode","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            RunConsoleCommand("say","!trainfuck "..player:SteamID())
+            autobox:CallPlugin("explode",{player})
         end
-        
+
         DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,70)
@@ -152,15 +157,19 @@ function PLUGIN:OpenProfile(player)
             draw.DrawText("Trainfuck","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            RunConsoleCommand("say","!trainfuck "..player:SteamID())
+            autobox:CallPlugin("trainfuck",{player})
         end
-    end    
+    end
 end
 
 function PLUGIN:CloseProfile()
     if(PLUGIN.profile)then
         PLUGIN.profile:Remove()
     end
+end
+
+function PLUGIN:AAT_OnReload()
+    if(CLIENT)then self:CloseProfile() end
 end
 
 autobox:RegisterPlugin(PLUGIN)

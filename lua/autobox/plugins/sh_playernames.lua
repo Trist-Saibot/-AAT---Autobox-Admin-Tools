@@ -7,7 +7,7 @@ PLUGIN.author = "Trist"
 PLUGIN.description = "Displays player names above heads."
 PLUGIN.perm = "See Player Names"
 
-function PLUGIN:HUDPaint()    
+function PLUGIN:HUDPaint()
     if(!LocalPlayer():AAT_HasPerm(PLUGIN.perm))then return end
     for _,v in ipairs(player.GetAll())do
         if((v != LocalPlayer() and v:Alive()) or LocalPlayer():GetNWBool("AAT_Ragdolled",false))then
@@ -15,8 +15,8 @@ function PLUGIN:HUDPaint()
             if(v:GetNWBool("AAT_Ragdolled",false) and IsValid(v:GetNWEntity("AAT_Ragdoll",nil)))then
                 target = v:GetNWEntity("AAT_Ragdoll",nil)
             end
-            
-            
+
+
             local bone = target:LookupBone("ValveBiped.Bip01_Head1")
             local pos = nil
             if(!bone)then
@@ -27,7 +27,7 @@ function PLUGIN:HUDPaint()
             if(type(target)=="Player")then
                 pos = target:GetShootPos()
             end
-                        
+
             local td = {}
             td.start = LocalPlayer():GetShootPos()
             td.endpos = pos
@@ -36,7 +36,7 @@ function PLUGIN:HUDPaint()
             if(!trace.HitWorld)then
                 surface.SetFont( "DermaDefaultBold" )
                 local w = surface.GetTextSize(v:Nick())+32
-                local h = 24               
+                local h = 24
 
                 local drawPos = pos:ToScreen()
                 local distance = LocalPlayer():GetShootPos():Distance(pos)
@@ -52,7 +52,7 @@ function PLUGIN:HUDPaint()
                 surface.DrawRect( drawPos.x, drawPos.y, w, h )
                 surface.SetDrawColor( 129, 129, 129, alpha )
                 surface.DrawOutlinedRect( drawPos.x, drawPos.y, w, h )
-                
+
                 surface.SetMaterial(autobox:GetRankInfo(v:AAT_GetRank()).IconTexture)
                 surface.SetDrawColor( 255, 255, 255, math.Clamp( alpha * 2, 0, 255 ) )
                 surface.DrawTexturedRect( drawPos.x + 5, drawPos.y + 5, 14, 14 )

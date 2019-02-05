@@ -21,7 +21,7 @@ function PLUGIN:Call(ply,args)
         explosive:SetKeyValue( "iMagnitude", "1" )
         explosive:Fire( "Explode", 0, 0 )
         explosive:EmitSound( "ambient/explosions/explode_4.wav", 500, 500 )
-			
+
         v:SetVelocity( Vector( 0, 0, 400 ) )
         v:Kill()
         v:SetFrags(v:Frags()+1)

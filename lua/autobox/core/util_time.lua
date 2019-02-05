@@ -10,8 +10,8 @@ if(SERVER)then
             autobox:SQL_UpdatePlaytime(ply,ply:AAT_GetPlaytime())
 			ply.Playtime = ply:AAT_GetPlaytime()
 			ply.LastSave = autobox:SyncTime()
-			autobox:SyncPlaytime() 
-        end		
+			autobox:SyncPlaytime()
+        end
     end)
 end
 local AAT_Player = FindMetaTable("Player")
@@ -38,18 +38,18 @@ end
 if(SERVER)then
 	util.AddNetworkString("AAT_TimeSync")
 	util.AddNetworkString("AAT_PlaytimeSync")
-	
+
 	function autobox:SyncPlaytime()
 		net.Start("AAT_PlaytimeSync")
 			local playerData = {}
 				for _,v in ipairs(player.GetAll())do
 					table.insert(playerData,{SteamID = v:SteamID(),Playtime = v.Playtime or 0,LastJoin = v.LastJoin or 0,LastSave = v.LastSave or 0})
 				end
-			net.WriteTable(playerData)	
-		net.Broadcast()	
+			net.WriteTable(playerData)
+		net.Broadcast()
 	end
 	timer.Create("AAT_SyncPlaytime",60,0,autobox.SyncPlaytime)
-	
+
 	net.Receive("AAT_TimeSync",function(len,ply)
 		net.Start("AAT_TimeSync")
 		net.WriteInt(os.time(),32)
@@ -69,7 +69,7 @@ if(CLIENT)then
 		return os.time() - autobox.timeSync
 	end
 	net.Receive("AAT_TimeSync",function(len,ply)
-		autobox.timeSync = os.time() - net.ReadInt(32)	
+		autobox.timeSync = os.time() - net.ReadInt(32)
 	end)
 	net.Receive("AAT_PlaytimeSync",function()
 		local playerData = net.ReadTable()
@@ -80,17 +80,16 @@ if(CLIENT)then
 					p.Playtime = v.Playtime
 					p.LastJoin = v.LastJoin
 					p.LastSave = v.LastSave
-					table.remove(players,k)					
+					table.remove(players,k)
 					break
 				elseif(p:SteamID()=="NULL" && v.SteamID == "BOT")then
 					p.Playtime = v.Playtime
 					p.LastJoin = v.LastJoin
 					p.LastSave = v.LastSave
 					table.remove(players,k)
-					break				
+					break
 				end
 			end
 		end
 	end)
 end
-	

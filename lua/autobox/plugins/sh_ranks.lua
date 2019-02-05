@@ -23,7 +23,7 @@ function PLUGIN:Call(ply,args)
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," set their rank to ",autobox.colors.red,autobox:GetRankInfo(args[#args]).RankName,autobox.colors.white,".")
             else
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," set the rank of ",autobox.colors.blue,player.Nick,autobox.colors.white," to ",autobox.colors.red,autobox:GetRankInfo(args[#args]).RankName,autobox.colors.white,".")
-            end    
+            end
         end
     else
         local players = autobox:FindPlayers({unpack(args),ply})
@@ -33,14 +33,14 @@ function PLUGIN:Call(ply,args)
         elseif(autobox:GetRankInfo(args[#args]))then --if the rank of the last arg exists
             if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
             if(!autobox:ValidateBetterThan(ply,args[#args]))then return end
-            
+
             players[1]:AAT_SetRank(args[#args])
             if(players[1]:SteamID()==ply:SteamID())then
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," set their rank to ",autobox.colors.red,autobox:GetRankInfo(args[#args]).RankName,autobox.colors.white,".")
             else
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," set the rank of ",autobox.colors.blue,players[1]:Nick(),autobox.colors.white," to ",autobox.colors.red,autobox:GetRankInfo(args[#args]).RankName,autobox.colors.white,".")
             end
-        end       
+        end
     end
 end
 

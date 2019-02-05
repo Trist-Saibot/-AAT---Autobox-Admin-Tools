@@ -6,10 +6,10 @@ if(!autobox.perms)then autobox.perms = {} end
 local AAT_Player = FindMetaTable("Player")
 local AAT_Entity = FindMetaTable("Entity")
 
-if(SERVER)then        
+if(SERVER)then
     util.AddNetworkString("AAT_SyncRanks")
     util.AddNetworkString("AAT_SyncPerms")
-    function AAT_Player:AAT_SetRank(rank)  
+    function AAT_Player:AAT_SetRank(rank)
         if(autobox:SQL_FindRank(rank))then
             autobox:SQL_UpdatePlayerRank(self,rank)
             self:SetNWString("AAT_Rank",rank)
@@ -23,7 +23,7 @@ if(SERVER)then
                 if(v:SteamID()==steamID)then
                     v:SetNWString("AAT_Rank",rank)
                     break
-                end                
+                end
             end
         end
     end
@@ -51,7 +51,7 @@ if(SERVER)then
         --grab the two ranks from the SQL table
         local p_rank = autobox:SQL_FindRank(self:AAT_GetRank())
         local c_rank = autobox:SQL_FindRank(rank)
-        
+
         --check if the rank sent in is valid, the first will(should) always be
         if(c_rank)then
             return(p_rank.Immunity >= c_rank.Immunity)
@@ -61,7 +61,7 @@ if(SERVER)then
     function AAT_Player:AAT_HasPerm(perm)
         if(self:AAT_IsSpecialBoy())then return true end
         return autobox:SQL_CheckPerm(self:AAT_GetRank(),perm)
-    end 
+    end
     function autobox:SyncRanks(ply)
         net.Start("AAT_SyncRanks")
             net.WriteTable(autobox:SQL_GetRanks())
@@ -116,7 +116,7 @@ if(CLIENT)then
             end
         end
         return nil
-    end    
+    end
     function autobox:HasImmunity(rank,rank2)
         return autobox:GetRankInfo(rank).Immunity >= autobox:GetRankInfo(rank2).Immunity
     end
@@ -126,11 +126,11 @@ end
 function AAT_Player:AAT_GetRank()
     if(!self:IsValid())then return end
     if(SERVER and self:IsListenServerHost())then return "owner" end
-    return self:GetNWString("AAT_Rank","guest")        
+    return self:GetNWString("AAT_Rank","guest")
 end
 function AAT_Player:AAT_IsSpecialBoy()
     return self:AAT_GetRank() == "owner"
-    or (tostring(self:SteamID()) == "STEAM_0:0:41928574") --Trist 
+    or (tostring(self:SteamID()) == "STEAM_0:0:41928574") --Trist
     or (tostring(self:SteamID()) == "STEAM_0:0:52326610") --Green
     or (tostring(self:SteamID()) == "STEAM_0:0:24540192") --Bob
     or (tostring(self:SteamID()) == "STEAM_0:1:33216124") --Sakiren
@@ -153,5 +153,5 @@ end
 function AAT_Player:AAT_IsRank(rank)
     if(!rank)then return end
     if(type(rank)!="string")then return end --check input for a string
-    return (self:AAT_GetRank()==rank)        
+    return (self:AAT_GetRank()==rank)
 end

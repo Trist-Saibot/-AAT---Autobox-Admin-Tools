@@ -26,19 +26,19 @@ function autobox:FindPlayers(...)
             if(type(v)=="string")then
                 if(autobox:IsNameMatch(ply,v)) then table.insert(matches,ply) end
             end
-        end        
+        end
     end
     if(#matches<1)then
         for _,v in pairs(args)do
             if(type(v)=="Player")then
                 table.insert(matches,v)
-                return matches                
+                return matches
             end
         end
     end
     return matches
 end
---Finds players with passed steamID. 
+--Finds players with passed steamID.
 --Searches SQL database rather than player list
 function autobox:FindPlayerOffline(steamID)
     if(string.match(steamID, "STEAM_[0-5]:[0-9]:[0-9]+"))then
@@ -61,7 +61,7 @@ function autobox:CreatePlayerList(players)
             else
                 list = list..", "..players[i]:Nick()
             end
-        end        
+        end
     end
     return list
 end
@@ -75,7 +75,7 @@ if(SERVER)then
             end
             local time = autobox:SyncTime()
             ply.LastJoin = time
-            ply.LastSave = time            
+            ply.LastSave = time
             ply.Playtime = tonumber(autobox:SQL_GetPlayerData(ply).Playtime) or 0
             autobox:SQL_UpdateLastJoin(ply,time)
             if(data.LastJoin != "NULL")then
@@ -83,23 +83,23 @@ if(SERVER)then
                     autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago as ",autobox.colors.red,data.Nick,autobox.colors.white,".")
                     autobox:SQL_UpdatePlayerName(ply:SteamID(),ply:Nick())
                 else
-                    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago.")            
-                end                
+                    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago.")
+                end
             else
-                autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has joined for the first time.")            
-            end 
+                autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has joined for the first time.")
+            end
             timer.Create("AAT_TimeSync_"..time,1,1,function()
                 autobox:SyncPlaytime()
                 timer.Remove("AAT_TimeSync_"..time)
             end)
-            
+
             ply:SetNWString("AAT_Rank",data.Rank)
             autobox:SyncRanks(ply)
             autobox:SyncPerms(ply)
 
             hook.Run("AAT_InitializePlayer",ply)
-            ply.Initialized = true            
-        end        
+            ply.Initialized = true
+        end
     end)
 
     gameevent.Listen('player_changename')
@@ -107,7 +107,7 @@ if(SERVER)then
         local player = Player(data.userid)
         local oldname = data.oldname
         local newname = data.newname
-        autobox:Notify(autobox.colors.blue,oldname,autobox.colors.white," changed their name to ",autobox.colors.red,newname,autobox.colors.white,".")            
+        autobox:Notify(autobox.colors.blue,oldname,autobox.colors.white," changed their name to ",autobox.colors.red,newname,autobox.colors.white,".")
         autobox:SQL_UpdatePlayerName(player:SteamID(),newname)
     end)
 

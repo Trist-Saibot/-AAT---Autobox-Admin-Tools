@@ -26,7 +26,7 @@ end
 if(CLIENT)then
     net.Receive("AAT_HideBeam",function()
         local ply = net.ReadEntity()
-        ply.AAT_HidePhysgun = net.ReadBool()        
+        ply.AAT_HidePhysgun = net.ReadBool()
     end)
 end
 function PLUGIN:Call(ply,args)
@@ -53,9 +53,9 @@ function PLUGIN:Call(ply,args)
         plural = "s"
     end
     if(#players==1 and players[1]==ply)then
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has "..beamString.." their physgun beam.") 
+        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has "..beamString.." their physgun beam.")
     else
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has "..beamString.." the physgun beam"..plural.." of ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".") 
+        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has "..beamString.." the physgun beam"..plural.." of ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")
     end
 end
 function PLUGIN:DrawPhysgunBeam(ply)

@@ -19,7 +19,7 @@ function PLUGIN:Call(ply,args)
         end
     end
     if(!autobox:ValidateHasTarget(ply,players))then return end
-    
+
 
     local size = Vector(32,32,72)
     local tr = {}

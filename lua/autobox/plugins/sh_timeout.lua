@@ -11,7 +11,7 @@ PLUGIN.usage = "[players] [1/0]"
 
 function PLUGIN:Call(ply,args)
     if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    if(#args>0 and !(#args==1 and tonumber(args[1])))then        
+    if(#args>0 and !(#args==1 and tonumber(args[1])))then
         local players = autobox:FindPlayers(args)
         if(!autobox:ValidateHasTarget(ply,players))then return end
     else
@@ -22,7 +22,7 @@ function PLUGIN:Call(ply,args)
         if(IsValid(v))then
             local owner = v:GetNWString("AAT_Owner",nil)
             local flag = false
-            for _,p in ipairs(players)do                
+            for _,p in ipairs(players)do
                 if(p:SteamID()==owner)then
                     flag = true
                     break
@@ -32,12 +32,12 @@ function PLUGIN:Call(ply,args)
                 local phys = v:GetPhysicsObject()
                 if(enabled)then
                     v.AAT_WasFrozen = phys:IsMotionEnabled()
-                    phys:EnableMotion(false)                    
+                    phys:EnableMotion(false)
                 else
                     if(v.AAT_WasFrozen) then
                         phys:EnableMotion(v.AAT_WasFrozen)
                         phys:Wake()
-                    end                    
+                    end
                     v.AAT_WasFrozen = nil
                 end
             end

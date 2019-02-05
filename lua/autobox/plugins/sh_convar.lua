@@ -12,13 +12,13 @@ PLUGIN.allowedConvars = {
     "sbox_",
     "g_",
     "mp_",
-    "aat_"	
+    "aat_"
 }
 
 function PLUGIN:Call(ply,args)
 	if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
 	if(!autobox:ValidateNumber(ply,args[2]))then return end
-	
+
 	if(!GetConVar(args[1])) then
 		autobox:Notify( ply, autobox.colors.red, "Unknown convar!" )
 	elseif(GetConVar(args[1]):GetInt() == tonumber(args[2])) then
@@ -37,8 +37,8 @@ function PLUGIN:Call(ply,args)
 		else
 			autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"You are not allowed to change that convar!")
 		end
-	end		
-	
+	end
+
 end
 
 autobox:RegisterPlugin(PLUGIN)

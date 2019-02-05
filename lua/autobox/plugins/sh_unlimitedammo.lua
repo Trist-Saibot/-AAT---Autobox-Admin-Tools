@@ -33,7 +33,7 @@ function PLUGIN:FillClips(ply,wep)
     --taken straight from evolve's uammo
     if(wep:Clip1()<250)then wep:SetClip1(250) end
     if(wep:Clip2()<250)then wep:SetClip2(250) end
-    
+
     if wep:GetPrimaryAmmoType() == 10 or wep:GetPrimaryAmmoType() == 8 then
 		ply:GiveAmmo( 9 - ply:GetAmmoCount( wep:GetPrimaryAmmoType() ), wep:GetPrimaryAmmoType() )
 	elseif wep:GetSecondaryAmmoType() == 9 or wep:GetSecondaryAmmoType() == 2 then
