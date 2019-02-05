@@ -29,6 +29,15 @@ function autobox:ValidateHasTarget(ply,players)
     end    
 end
 
+function autobox:ValidatePlayerFound(ply,target)
+    if(target)then
+        return true
+    else
+        autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.noplayers)
+        return false
+    end 
+end
+
 function autobox:ValidateBetterThan(ply,target)
     if(ply:AAT_BetterThan(target))then
         return true

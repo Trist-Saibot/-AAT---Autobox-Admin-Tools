@@ -85,6 +85,26 @@ if(SERVER)then
             end
         end
     end
+    function autobox:SQL_UpdatePlayerRankOffline(steamID,rank)
+        if(steamID and rank)then
+            if(type(steamID)=="string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(rank)=="string")then    
+                sql.Query("UPDATE AAT_Players SET "..
+                "Rank = "..sql.SQLStr(rank).." "..
+                "WHERE SteamID = "..sql.SQLStr(steamID)
+                )
+            end
+        end
+    end
+    function autobox:SQL_UpdatePlayerName(steamID,name)
+        if(steamID and name)then
+            if(type(steamID)=="string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(name)=="string")then 
+                sql.Query("UPDATE AAT_Players SET "..
+                "Nick = "..sql.SQLStr(name).." "..
+                "WHERE SteamID = "..sql.SQLStr(steamID)
+                )
+            end   
+        end
+    end
     function autobox:SQL_RegisterPlayer(ply)
         if(ply)then
             if(ply:IsValid())then    

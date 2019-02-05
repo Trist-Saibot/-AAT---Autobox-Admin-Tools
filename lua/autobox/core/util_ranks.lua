@@ -15,6 +15,18 @@ if(SERVER)then
             self:SetNWString("AAT_Rank",rank)
         end
     end
+    function autobox:SetPlayerRankOffline(steamID,rank)
+        if(autobox:SQL_FindRank(rank) and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+"))then
+            autobox:SQL_UpdatePlayerRankOffline(steamID,rank)
+            --update the player if they happen to be logged in also
+            for _,v in ipairs(player.GetAll())do
+                if(v:SteamID()==steamID)then
+                    v:SetNWString("AAT_Rank",rank)
+                    break
+                end                
+            end
+        end
+    end
     function AAT_Player:AAT_BetterThan(rank)
         if(self:AAT_IsSpecialBoy())then return true end
         if(!rank)then return end

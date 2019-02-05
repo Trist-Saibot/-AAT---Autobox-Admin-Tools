@@ -38,6 +38,14 @@ function autobox:FindPlayers(...)
     end
     return matches
 end
+--Finds players with passed steamID. 
+--Searches SQL database rather than player list
+function autobox:FindPlayerOffline(steamID)
+    if(string.match(steamID, "STEAM_[0-5]:[0-9]:[0-9]+"))then
+        return autobox:SQL_GetPlayerDataBySteamID(steamID)
+    end
+    return nil
+end
 function autobox:CreatePlayerList(players)
     local list = ""
     if(#players == 1) then
@@ -71,7 +79,12 @@ if(SERVER)then
             ply.Playtime = tonumber(autobox:SQL_GetPlayerData(ply).Playtime) or 0
             autobox:SQL_UpdateLastJoin(ply,time)
             if(data.LastJoin != "NULL")then
-                autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago.")            
+                if(ply:Nick()!=data.Nick and !ply:IsBot())then
+                    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago as ",autobox.colors.red,data.Nick,autobox.colors.white,".")
+                    autobox:SQL_UpdatePlayerName(ply:SteamID(),ply:Nick())
+                else
+                    autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago.")            
+                end                
             else
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has joined for the first time.")            
             end 
@@ -88,4 +101,14 @@ if(SERVER)then
             ply.Initialized = true            
         end        
     end)
+
+    gameevent.Listen('player_changename')
+    hook.Add('player_changename','AAT_OnNameChange',function(data)
+        local player = Player(data.userid)
+        local oldname = data.oldname
+        local newname = data.newname
+        autobox:Notify(autobox.colors.blue,oldname,autobox.colors.white," changed their name to ",autobox.colors.red,newname,autobox.colors.white,".")            
+        autobox:SQL_UpdatePlayerName(player:SteamID(),newname)
+    end)
+
 end
