@@ -181,7 +181,7 @@ if(CLIENT)then
             surface.SetDrawColor(ColorAlpha(autobox.colors.discordAlt[1],PLUGIN.alpha))
             surface.DrawRect(3,24,w-6,252)
 
-            PLUGIN:DrawBorder(0,0,w,h,PLUGIN.alpha)
+            autobox.draw:DrawBorder(0,0,w,h,PLUGIN.alpha)
         end
         function self.Frame:PaintOver(w,h)
             if(PLUGIN.chatOpen and PLUGIN.TextBox:HasFocus())then
@@ -219,7 +219,10 @@ if(CLIENT)then
         self.ScrollPanel.Messages = {}
         self.ScrollPanel:SetPos(3,25)
         self.ScrollPanel:SetSize(self.Frame:GetWide()-6,250)
-        self:CustomVBar(self.ScrollPanel)
+        function self.ScrollPanel:GetAlpha()
+            return PLUGIN.alpha
+        end
+        autobox.draw:CustomVBar(self.ScrollPanel)
         function self.ScrollPanel:ScrollToEnd()
             if(#self.Messages>1 and self.Messages[#self.Messages])then
                 self:ScrollToChild(self.Messages[#self.Messages])
@@ -466,7 +469,10 @@ if(CLIENT)then
         self.EmoteFrame:SetSize(300,200)
         self.EmoteFrame.locx,self.EmoteFrame.locy=self.Emote:GetPos()
         self.EmoteFrame:SetPos(self.EmoteFrame.locx-273-16,self.EmoteFrame.locy-202)
-        self:CustomVBar(self.EmoteFrame)
+        function self.EmoteFrame:GetAlpha()
+            return PLUGIN.alpha
+        end
+        autobox.draw:CustomVBar(self.EmoteFrame)
         function self.EmoteFrame:Paint(w,h)
             surface.SetDrawColor(autobox.colors.discordAlt[1])
             surface.DrawRect(0,0,w,h)
@@ -615,84 +621,6 @@ function PLUGIN:OnPlayerChat(ply,txt,team,dead)
     end
 end
 
-
---useful drawing functions
-if(CLIENT)then
-    PLUGIN.borderMat = Material("autobox/ui/border.png")
-    PLUGIN.gripMat = Material("autobox/ui/grip.png")
-    function PLUGIN:DrawBorder(x,y,w,h,alpha)
-        surface.SetAlphaMultiplier(alpha/255)
-        surface.SetDrawColor(color_white)
-        surface.SetMaterial(self.borderMat)
-        surface.DrawTexturedRectUV(x,y,16,16,0,0,0.5,0.5) --top left
-        surface.DrawTexturedRectUV(x,y+h-16,16,16,0,0.5,0.5,1) --bottom left
-        surface.DrawTexturedRectUV(x+w-16,y,16,16,0.5,0,1,0.5) --top right
-        surface.DrawTexturedRectUV(x+w-16,y+h-16,16,16,0.5,0.5,1,1) --bottom right
-
-        surface.DrawTexturedRectUV(x+16,y,w-32,16,0.4375,0,0.5625,0.5) --top middle
-        surface.DrawTexturedRectUV(x,y+16,16,h-32,0,0.4375,0.5,0.5625) --left middle
-        surface.DrawTexturedRectUV(x+w-16,y+16,16,h-32,0.5,0.4375,1,0.5625) --right middle
-        surface.DrawTexturedRectUV(x+16,y+h-16,w-32,16,0.4375,0.5,0.5625,1) --bottom middle
-        surface.SetAlphaMultiplier(1)
-    end
-    function PLUGIN:DrawGrip(x,y,w,h,alpha)
-        surface.SetAlphaMultiplier(alpha/255)
-        surface.SetDrawColor(color_white)
-        surface.SetMaterial(self.gripMat)
-        local s = 8
-        surface.DrawTexturedRectUV(x,y,s,s,0,0,0.5,0.5) --top left
-        surface.DrawTexturedRectUV(x,y+h-s,s,s,0,0.5,0.5,1) --bottom left
-        surface.DrawTexturedRectUV(x+w-s,y,s,s,0.5,0,1,0.5) --top right
-        surface.DrawTexturedRectUV(x+w-s,y+h-s,s,s,0.5,0.5,1,1) --bottom right
-        surface.DrawTexturedRectUV(x,y+s,s,h-s*2,0,0.4375,0.5,0.5) --left middle
-        surface.DrawTexturedRectUV(x+w-s,y+s,s,h-s*2,0.5,0.4375,1,0.5) --right middle
-        surface.SetAlphaMultiplier(1)
-    end
-    function PLUGIN:CustomVBar(panel)
-        local vbar = panel:GetVBar()
-        vbar:SetHideButtons(true)
-        vbar:SetWide(16)
-        function vbar:Paint(w,h)
-            surface.SetDrawColor(ColorAlpha(autobox.colors.discord[4],PLUGIN.alpha))
-            surface.DrawRect(7,4,2,h-8)
-        end
-        function vbar.btnGrip:Paint(w,h)
-            PLUGIN:DrawGrip(0,0,w,h,PLUGIN.alpha)
-        end
-    end
-    function PLUGIN:AddSlider(parent,x,y,w,h,text)
-        if(IsValid(parent))then
-            local DSlider = vgui.Create('DNumSlider',parent)
-            DSlider:SetPos(x,y)
-            DSlider:SetSize(w,h)
-            DSlider:SetMin(0)
-            DSlider:SetMax(255)
-            DSlider:SetDecimals(0)
-            function DSlider:PerformLayout()
-                self.Label:SetWide(0)
-            end
-            function DSlider.Slider.Knob:Paint(w,h)
-                PLUGIN:DrawGrip(0,0,w,h,255)
-            end
-            function DSlider.Slider:Paint(w,h)
-                surface.SetDrawColor(autobox.colors.discord[4])
-                surface.DrawRect(8,12,w-16,1)
-            end
-
-            local DPanel = vgui.Create("DPanel",parent)
-            DPanel:SetSize(w,h)
-            DPanel:SetPos(DSlider:GetPos())
-            DPanel:MoveLeftOf(DSlider)
-            function DPanel:Paint(w,h)
-                draw.TextShadow({text=text,pos={w,h/2.25},xalign=TEXT_ALIGN_RIGHT,yalign=TEXT_ALIGN_CENTER},1)
-            end
-
-            return DSlider
-        end
-        return nil
-    end
-end
-
 --chat box settings window
 function PLUGIN:OpenChatSettings()
     if(self.chatOpen)then
@@ -709,7 +637,7 @@ function PLUGIN:OpenChatSettings()
         surface.DrawRect(3,3,w-6,22)
         surface.SetDrawColor(autobox.colors.discord[1])
         surface.DrawRect(3,25,w-6,h-26)
-        PLUGIN:DrawBorder(0,0,w,h,255)
+        autobox.draw:DrawBorder(0,0,w,h,255)
         surface.SetDrawColor(autobox.colors.discord[2])
         surface.DrawRect(2,23,w-4,1)
         draw.TextShadow({pos={10,6},text="Settings"},1)
@@ -720,7 +648,7 @@ function PLUGIN:OpenChatSettings()
         end
     end
     local temp = nil
-    temp = self:AddSlider(self.SettingsFrame,100,50,200,25,'alpha_show')
+    temp = autobox.draw:AddSlider(self.SettingsFrame,100,50,200,25,'alpha_show')
     temp:SetValue(self.alphaShow)
     function temp:OnValueChanged(value)
         PLUGIN.alphaShow = value
@@ -728,7 +656,7 @@ function PLUGIN:OpenChatSettings()
             PLUGIN.alpha = value
         end
     end
-    temp = self:AddSlider(self.SettingsFrame,100,75,200,25,'alpha_hide')
+    temp = autobox.draw:AddSlider(self.SettingsFrame,100,75,200,25,'alpha_hide')
     temp:SetValue(self.alphaHide)
     function temp:OnValueChanged(value)
         PLUGIN.alphaHide = value
