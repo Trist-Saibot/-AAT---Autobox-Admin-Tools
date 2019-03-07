@@ -11,6 +11,9 @@ if(SERVER)then
         if(!sql.TableExists("AAT_Players"))then
             sql.Query("CREATE TABLE AAT_Players (`SteamID` TEXT,`Nick` TEXT,`Rank` TEXT,`Playtime` INTEGER,`LastJoin` INTEGER,CONSTRAINT `PK_Players` PRIMARY KEY (`SteamID`),CONSTRAINT `FK_P_Rank` FOREIGN KEY (`Rank`) REFERENCES AAT_Ranks(`Rank`))")
         end
+        if(!sql.TableExists("AAT_Restrictions"))then
+            sql.Query("CREATE TABLE AAT_Restrictions(`Type` TEXT,`Permission` TEXT,`Immunity` INTEGER DEFAULT 5,CONSTRAINT `PK_Restrictions` PRIMARY KEY (`Type`,`Permission`))")
+        end
     end
     function autobox:SQL_CheckPerm(rank,perm)
         if(perm and rank)then
@@ -148,6 +151,20 @@ if(SERVER)then
                 )
             end
         end
+    end
+    function autobox:SQL_Restriction_CheckPerm(ptype,perm)
+        if(type and perm)then
+            if(type(ptype)=="string" and type(perm)=="string")then
+                local data = sql.QueryRow("SELECT * from AAT_Restrictions where Type = "..sql.SQLStr(ptype).."and Permission = "..sql.SQLStr(perm),1)
+                if(!data)then --instead, create the row if it cannot be found. Give it the default Immunity.
+                    sql.Query("INSERT INTO AAT_Restrictions VALUES ("..sql.SQLStr(ptype)..","..sql.SQLStr(perm)..",5)")
+                    return 5
+                else
+                    return data.Immunity
+                end
+            end
+        end
+        return nil
     end
 end
 
