@@ -10,9 +10,9 @@ PLUGIN.command = "ach"
 PLUGIN.usage = "<player> <achievement>"
 
 function PLUGIN:Call( ply, args )
-	if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
+	if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
 	local players = autobox:FindPlayers({args[1]})
-	if(!autobox:ValidateHasTarget(ply,players))then return end
+	if (!autobox:ValidateHasTarget(ply,players)) then return end
 	local achievement = table.concat(args," ",2)
 	if ( #achievement > 0 ) then
 		for _, pl in ipairs( players ) do

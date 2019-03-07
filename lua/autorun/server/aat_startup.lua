@@ -19,22 +19,22 @@ function autobox:PrettyConsole( ... )
     local length = 0
     local args = {}
     for _,v in ipairs({...}) do
-        if(type(v)=="string")then
-            if(string.len(v)>length)then length = string.len(v) end
+        if (type(v) == "string") then
+            if (string.len(v) > length) then length = string.len(v) end
             table.insert(args,v)
         end
     end
-    print("+-"..string.rep("-",length).."-+")
+    print("+-" .. string.rep("-",length) .. "-+")
     for _,v in ipairs(args) do
-        print(string.format("| %-"..length.."s |",v))
+        print(string.format("| %-" .. length .. "s |",v))
     end
-    print("+-"..string.rep("-",length).."-+")
+    print("+-" .. string.rep("-",length) .. "-+")
 end
 
 --Print startup message.
 autobox:PrettyConsole(
     "Autobox Administration Tools",
-    "Version: "..autobox.version,
+    "Version: " .. autobox.version,
     "By Trist Saibot",
     "For use on the Autobox server",
     autobox.Link_Steam
@@ -51,4 +51,3 @@ include("aat_framework.lua")
 autobox:LoadCore()
 autobox:SQL_SetupTables()
 autobox:LoadPlugins()
-

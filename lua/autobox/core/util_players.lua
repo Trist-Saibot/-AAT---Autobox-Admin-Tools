@@ -1,16 +1,16 @@
 --Player Management
 function autobox:IsNameMatch(ply,str)
-    if(str=="*")then --all players
+    if (str == "*") then --all players
         return true
-    elseif(str=="@" and ply:IsAdmin())then --only admins
+    elseif (str == "@" and ply:IsAdmin()) then --only admins
         return true
-    elseif(str=="!@" and !ply:IsAdmin())then --non admins
+    elseif (str == "!@" and !ply:IsAdmin()) then --non admins
         return true
-    elseif(string.match(str, "STEAM_[0-5]:[0-9]:[0-9]+"))then --steamid
+    elseif (string.match(str, "STEAM_[0-5]:[0-9]:[0-9]+")) then --steamid
         return ply:SteamID() == str
     else --player name
-        if(!tonumber(str))then --can't pass number as arg
-            return(string.lower(ply:Nick())==string.lower(str) or string.find(string.lower(ply:Nick()),string.lower(str),nil,true))
+        if (!tonumber(str)) then --can't pass number as arg
+            return string.lower(ply:Nick()) == string.lower(str) or string.find(string.lower(ply:Nick()),string.lower(str),nil,true)
         end
     end
 end
@@ -21,16 +21,16 @@ function autobox:FindPlayers(...)
     --use the player if no args were found
     local matches = {}
     local args = unpack{...}
-    for _, ply in ipairs(player.GetAll())do
+    for _, ply in ipairs(player.GetAll()) do
         for _,v in ipairs(args) do
-            if(type(v)=="string")then
-                if(autobox:IsNameMatch(ply,v)) then table.insert(matches,ply) end
+            if (type(v) == "string" and autobox:IsNameMatch(ply,v)) then
+                table.insert(matches,ply)
             end
         end
     end
-    if(#matches<1)then
-        for _,v in pairs(args)do
-            if(type(v)=="Player")then
+    if (#matches < 1) then
+        for _,v in pairs(args) do
+            if (type(v) == "Player") then
                 table.insert(matches,v)
                 return matches
             end
@@ -41,35 +41,35 @@ end
 --Finds players with passed steamID.
 --Searches SQL database rather than player list
 function autobox:FindPlayerOffline(steamID)
-    if(string.match(steamID, "STEAM_[0-5]:[0-9]:[0-9]+"))then
+    if (string.match(steamID, "STEAM_[0-5]:[0-9]:[0-9]+")) then
         return autobox:SQL_GetPlayerDataBySteamID(steamID)
     end
     return nil
 end
 function autobox:CreatePlayerList(players)
     local list = ""
-    if(#players == 1) then
+    if (#players == 1) then
         list = players[1]:Nick()
-    elseif(#players==#player.GetAll()) then
+    elseif (#players == #player.GetAll()) then
         list = "everyone"
     else
-        for i=1,#players do
-            if(i==#players)then
-                list = list.." ".."and".." "..players[i]:Nick()
-            elseif(i==1)then
+        for i = 1,#players do
+            if (i == #players) then
+                list = list .. " " .. "and" .. " " .. players[i]:Nick()
+            elseif (i == 1) then
                 list = players[i]:Nick()
             else
-                list = list..", "..players[i]:Nick()
+                list = list .. ", " .. players[i]:Nick()
             end
         end
     end
     return list
 end
-if(SERVER)then
+if (SERVER) then
     hook.Add("PlayerSpawn","AAT_SetupPlayer",function(ply)
-        if(!ply.Initialized)then
+        if (!ply.Initialized) then
             local data = autobox:SQL_GetPlayerData(ply)
-            if(!data)then
+            if (!data) then
                 autobox:SQL_RegisterPlayer(ply)
                 data = autobox:SQL_GetPlayerData(ply)
             end
@@ -78,8 +78,8 @@ if(SERVER)then
             ply.LastSave = time
             ply.Playtime = tonumber(autobox:SQL_GetPlayerData(ply).Playtime) or 0
             autobox:SQL_UpdateLastJoin(ply,time)
-            if(data.LastJoin != "NULL")then
-                if(ply:Nick()!=data.Nick and !ply:IsBot())then
+            if (data.LastJoin != "NULL") then
+                if (ply:Nick() != data.Nick and !ply:IsBot()) then
                     autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," last joined ",autobox.colors.red,autobox:FormatTime(time-tonumber(data.LastJoin)),autobox.colors.white," ago as ",autobox.colors.red,data.Nick,autobox.colors.white,".")
                     autobox:SQL_UpdatePlayerName(ply:SteamID(),ply:Nick())
                 else
@@ -88,9 +88,9 @@ if(SERVER)then
             else
                 autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has joined for the first time.")
             end
-            timer.Create("AAT_TimeSync_"..time,1,1,function()
+            timer.Create("AAT_TimeSync_" .. time,1,1,function()
                 autobox:SyncPlaytime()
-                timer.Remove("AAT_TimeSync_"..time)
+                timer.Remove("AAT_TimeSync_" .. time)
             end)
 
             ply:SetNWString("AAT_Rank",data.Rank)
@@ -102,13 +102,12 @@ if(SERVER)then
         end
     end)
 
-    gameevent.Listen('player_changename')
-    hook.Add('player_changename','AAT_OnNameChange',function(data)
-        local player = Player(data.userid)
+    gameevent.Listen("player_changename")
+    hook.Add("player_changename","AAT_OnNameChange",function(data)
+        local ply = Player(data.userid)
         local oldname = data.oldname
         local newname = data.newname
         autobox:Notify(autobox.colors.blue,oldname,autobox.colors.white," changed their name to ",autobox.colors.red,newname,autobox.colors.white,".")
-        autobox:SQL_UpdatePlayerName(player:SteamID(),newname)
+        autobox:SQL_UpdatePlayerName(ply:SteamID(),newname)
     end)
-
 end

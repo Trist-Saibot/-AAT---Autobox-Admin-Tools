@@ -8,23 +8,23 @@ PLUGIN.description = "Displays player names above heads."
 PLUGIN.perm = "See Player Names"
 
 function PLUGIN:HUDPaint()
-    if(!LocalPlayer():AAT_HasPerm(PLUGIN.perm))then return end
-    for _,v in ipairs(player.GetAll())do
-        if((v != LocalPlayer() and v:Alive()) or LocalPlayer():GetNWBool("AAT_Ragdolled",false))then
+    if (!LocalPlayer():AAT_HasPerm(PLUGIN.perm)) then return end
+    for _,v in ipairs(player.GetAll()) do
+        if ((v != LocalPlayer() and v:Alive()) or LocalPlayer():GetNWBool("AAT_Ragdolled",false)) then
             local target = v
-            if(v:GetNWBool("AAT_Ragdolled",false) and IsValid(v:GetNWEntity("AAT_Ragdoll",nil)))then
+            if (v:GetNWBool("AAT_Ragdolled",false) and IsValid(v:GetNWEntity("AAT_Ragdoll",nil))) then
                 target = v:GetNWEntity("AAT_Ragdoll",nil)
             end
 
 
             local bone = target:LookupBone("ValveBiped.Bip01_Head1")
             local pos = nil
-            if(!bone)then
-                pos = target:GetPos()+Vector(0,0,90)
+            if (!bone) then
+                pos = target:GetPos() + Vector(0,0,90)
             else
                 pos = target:GetBonePosition( bone )
             end
-            if(type(target)=="Player")then
+            if (type(target) == "Player") then
                 pos = target:GetShootPos()
             end
 
@@ -33,9 +33,9 @@ function PLUGIN:HUDPaint()
             td.endpos = pos
             local trace = util.TraceLine(td)
 
-            if(!trace.HitWorld)then
+            if (!trace.HitWorld) then
                 surface.SetFont( "DermaDefaultBold" )
-                local w = surface.GetTextSize(v:Nick())+32
+                local w = surface.GetTextSize(v:Nick()) + 32
                 local h = 24
 
                 local drawPos = pos:ToScreen()

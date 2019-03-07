@@ -2,7 +2,7 @@
 --allows for more consistency
 
 function autobox:ValidatePerm(ply,perm)
-    if(ply:AAT_HasPerm(perm))then
+    if (ply:AAT_HasPerm(perm)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
@@ -11,8 +11,8 @@ function autobox:ValidatePerm(ply,perm)
 end
 
 function autobox:ValidateSingleTarget(ply,players)
-    if(!autobox:ValidateHasTarget(ply,players)) then return false end
-    if(#players<=1)then
+    if (!autobox:ValidateHasTarget(ply,players)) then return false end
+    if (#players <= 1) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.white,"Did you mean ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,"?")
@@ -21,7 +21,7 @@ function autobox:ValidateSingleTarget(ply,players)
 end
 
 function autobox:ValidateHasTarget(ply,players)
-    if(#players>0)then
+    if (#players > 0) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.noplayers)
@@ -30,7 +30,7 @@ function autobox:ValidateHasTarget(ply,players)
 end
 
 function autobox:ValidatePlayerFound(ply,target)
-    if(target)then
+    if (target) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.noplayers)
@@ -39,7 +39,7 @@ function autobox:ValidatePlayerFound(ply,target)
 end
 
 function autobox:ValidateBetterThan(ply,target)
-    if(ply:AAT_BetterThan(target))then
+    if (ply:AAT_BetterThan(target)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
@@ -48,7 +48,7 @@ function autobox:ValidateBetterThan(ply,target)
 end
 
 function autobox:ValidateBetterThanOrEqual(ply,target)
-    if(ply:AAT_BetterThanOrEqual(target))then
+    if (ply:AAT_BetterThanOrEqual(target)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
@@ -57,7 +57,7 @@ function autobox:ValidateBetterThanOrEqual(ply,target)
 end
 
 function autobox:ValidateNumber(ply,value)
-    if(tonumber(value))then
+    if (tonumber(value)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"The value must be a number!")

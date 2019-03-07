@@ -10,7 +10,7 @@ PLUGIN.usage = "<player>"
 
 function PLUGIN:Call(ply,args)
     local players = autobox:FindPlayers({unpack(args),ply})
-    if(!autobox:ValidateSingleTarget(ply,players))then return end
+    if (!autobox:ValidateSingleTarget(ply,players)) then return end
     autobox:Notify(ply,autobox.colors.blue,players[1]:Nick(),autobox.colors.white," has spent ",autobox.colors.red,autobox:FormatTime(players[1]:AAT_GetPlaytime()),autobox.colors.white," on this server.")
 end
 

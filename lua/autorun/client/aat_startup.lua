@@ -11,20 +11,20 @@ function autobox:PrettyConsole( ... )
     local length = 0
     local args = {}
     for _,v in ipairs({...}) do
-        if(type(v)=="string")then
-            if(string.len(v)>length)then length = string.len(v) end
+        if (type(v) == "string") then
+            if (string.len(v) > length) then length = string.len(v) end
             table.insert(args,v)
         end
     end
-    print("+-"..string.rep("-",length).."-+")
+    print("+-" .. string.rep("-",length) .. "-+")
     for _,v in ipairs(args) do
-        print(string.format("| %-"..length.."s |",v))
+        print(string.format("| %-" .. length .. "s |",v))
     end
-    print("+-"..string.rep("-",length).."-+")
+    print("+-" .. string.rep("-",length) .. "-+")
 end
 
 surface.CreateFont( "TristText_Default", {
-    font = "Trebuchet MS", 
+    font = "Trebuchet MS",
     extended = false,
     size = 20,
     weight = 500,
@@ -41,7 +41,7 @@ surface.CreateFont( "TristText_Default", {
     outline = false,
 } )
 surface.CreateFont( "TristText_Bold", {
-    font = "Trebuchet MS", 
+    font = "Trebuchet MS",
     extended = false,
     size = 20,
     weight = 1000,
@@ -61,7 +61,7 @@ surface.CreateFont( "TristText_Bold", {
 --Print startup message.
 autobox:PrettyConsole(
     "Autobox Administration Tools",
-    "Version: "..autobox.version,
+    "Version: " .. autobox.version,
     "By Trist Saibot",
     "For use on the Autobox server",
     autobox.Link_Steam

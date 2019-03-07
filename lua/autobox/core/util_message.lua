@@ -6,7 +6,7 @@ autobox.chatConst.noplayers2 = "No matching players with a lower immunity found.
 autobox.chatConst.noplayersnoimmunity = "No matching players found."
 autobox.chatConst.err = {Override = true,Icon = "cancel",IconTooltip = "Error"}
 
-if(SERVER)then
+if (SERVER) then
     util.AddNetworkString("autobox_message")
     autobox.silentNotify = false
 
@@ -14,19 +14,19 @@ if(SERVER)then
 
         local ply
         local args = {...}
-        if(type(args[1])=="Player" or args[1]== nil ) then ply = args[1] end
-        if(!self.silentNotify)then
+        if (type(args[1]) == "Player" or args[1] == nil ) then ply = args[1] end
+        if (!self.silentNotify) then
             local message = {}
             for _,v in pairs(args) do
-                if(type(v) == "string" or type(v) == "table")then
+                if (type(v) == "string" or type(v) == "table") then
                     table.insert(message,v)
-                elseif(type(v)=="number")then
+                elseif (type(v) == "number") then
                     table.insert(message,tostring(v))
                 end
             end
             net.Start("autobox_message")
             net.WriteTable(message)
-            if(ply != nil )then
+            if (ply != nil ) then
                 net.Send(ply)
             else
                 net.Broadcast()
@@ -37,7 +37,7 @@ else
     function autobox:Notify(...)
         local args = {}
         for _,v in ipairs({...}) do
-            if(type(v) == "string" or type(v) == "table")then
+            if (type(v) == "string" or type(v) == "table") then
                 table.insert(args,v)
             end
         end

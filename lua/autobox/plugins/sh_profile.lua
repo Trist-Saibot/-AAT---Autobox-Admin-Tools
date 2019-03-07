@@ -8,19 +8,19 @@ PLUGIN.description = "Display a player's profile"
 PLUGIN.command = "profile"
 PLUGIN.usage = "<player>"
 
-if(SERVER)then
+if (SERVER) then
     util.AddNetworkString("AAT_OpenProfile")
 end
 
 function PLUGIN:Call(ply,args)
     local players = autobox:FindPlayers({unpack(args),ply})
-    if(!autobox:ValidateSingleTarget(ply,players))then return end
+    if (!autobox:ValidateSingleTarget(ply,players)) then return end
     net.Start("AAT_OpenProfile")
         net.WriteEntity(players[1])
     net.Send(ply)
 end
 
-if(CLIENT)then
+if (CLIENT) then
     net.Receive("AAT_OpenProfile",function()
         PLUGIN:OpenProfile(net.ReadEntity())
     end)
@@ -39,11 +39,11 @@ function PLUGIN:OpenProfile(player)
         surface.DrawRect(0,0,w,h)
     end
     function PLUGIN.profile:Think()
-        if(!player:IsValid())then PLUGIN:CloseProfile() end
+        if (!player:IsValid()) then PLUGIN:CloseProfile() end
     end
 
     local Frame = vgui.Create("DPanel",PLUGIN.profile)
-    Frame:SetSize(PLUGIN.profile:GetWide(),PLUGIN.profile:GetTall()-25)
+    Frame:SetSize(PLUGIN.profile:GetWide(),PLUGIN.profile:GetTall() - 25)
     Frame:SetPos(0,25)
     function Frame:Paint(w,h)
         surface.SetDrawColor(autobox.colors.tan)
@@ -51,26 +51,26 @@ function PLUGIN:OpenProfile(player)
     end
 
     local InfoBox = vgui.Create("DPanel",Frame)
-    InfoBox:SetSize(300,128+8)
+    InfoBox:SetSize(300,128 + 8)
     InfoBox:SetPos(150,10)
     function InfoBox:Paint(w,h)
-        if(!player:IsValid())then return end
+        if (!player:IsValid()) then return end
         surface.SetDrawColor(autobox.colors.brown)
         surface.DrawRect(0,0,w,h)
         surface.SetDrawColor(autobox.colors.tan2)
         surface.DrawRect(4,4,w-8,h-8)
         draw.DrawText(player:Nick(),"TristText_Bold",9,5,autobox.colors.brown,TEXT_ALIGN_LEFT)
         draw.DrawText(player:SteamID(),"TristText_Bold",9,25,autobox.colors.brown,TEXT_ALIGN_LEFT)
-        draw.DrawText("["..autobox:GetRankInfo(player:AAT_GetRank()).RankName.."]","TristText_Bold",9,45,autobox.colors.brown,TEXT_ALIGN_LEFT)
+        draw.DrawText("[" .. autobox:GetRankInfo(player:AAT_GetRank()).RankName .. "]","TristText_Bold",9,45,autobox.colors.brown,TEXT_ALIGN_LEFT)
         draw.DrawText(autobox:FormatTime(player:AAT_GetPlaytime()),"TristText_Bold",9,65,autobox.colors.brown,TEXT_ALIGN_LEFT)
 
         InfoBox.count = 0
-        for _,ent in ipairs(ents.GetAll())do
-            if(ent:GetNWString("AAT_Owner") == player:SteamID())then
-                InfoBox.count=InfoBox.count+1
+        for _,ent in ipairs(ents.GetAll()) do
+            if (ent:GetNWString("AAT_Owner") == player:SteamID()) then
+                InfoBox.count = InfoBox.count + 1
             end
         end
-        draw.DrawText("Entities: "..InfoBox.count,"TristText_Bold",9,85,autobox.colors.brown,TEXT_ALIGN_LEFT)
+        draw.DrawText("Entities: " .. InfoBox.count,"TristText_Bold",9,85,autobox.colors.brown,TEXT_ALIGN_LEFT)
     end
 
     local BadgeBox = vgui.Create("DPanel",Frame)
@@ -85,7 +85,7 @@ function PLUGIN:OpenProfile(player)
     end
 
     local AvatarPanel = vgui.Create("DPanel",Frame)
-    AvatarPanel:SetSize(128+8,128+8)
+    AvatarPanel:SetSize(128 + 8,128 + 8)
     AvatarPanel:SetPos(10,10)
     function AvatarPanel:Paint(w,h)
         surface.SetDrawColor(autobox.colors.brown)
@@ -97,31 +97,31 @@ function PLUGIN:OpenProfile(player)
     Avatar:SetPos(4,4)
     Avatar:SetPlayer(player,128)
 
-    if(autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin"))then
+    if (autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin")) then
         local AdminBox = vgui.Create("DPanel",Frame)
         AdminBox:SetSize(200,98)
-        AdminBox:SetPos(Frame:GetWide()-210,10)
+        AdminBox:SetPos(Frame:GetWide() - 210,10)
         function AdminBox:Paint(w,h)
             surface.SetDrawColor(autobox.colors.brown)
             surface.DrawRect(0,0,w,h)
-            draw.DrawText("Admin Panel","TristText_Bold",w/2,0,autobox.colors.white,TEXT_ALIGN_CENTER)
+            draw.DrawText("Admin Panel","TristText_Bold",w / 2,0,autobox.colors.white,TEXT_ALIGN_CENTER)
         end
 
         local DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,22)
-        DButton:SetSize(AdminBox:GetWide()-8,24)
+        DButton:SetSize(AdminBox:GetWide() - 8,24)
         function DButton:Paint(w,h)
-            if(self:IsHovered())then
+            if (self:IsHovered()) then
                 surface.SetDrawColor(autobox.colors.tan2)
             else
                 surface.SetDrawColor(autobox.colors.tan)
             end
             surface.DrawRect(0,0,w,h)
-            draw.DrawText("Kick","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
+            draw.DrawText("Kick","TristText_Bold",w / 2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            if(player:IsValid())then
+            if (player:IsValid()) then
                 autobox:CallPlugin("kick",{player})
             end
         end
@@ -129,15 +129,15 @@ function PLUGIN:OpenProfile(player)
         DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,46)
-        DButton:SetSize(AdminBox:GetWide()-8,24)
+        DButton:SetSize(AdminBox:GetWide() - 8,24)
         function DButton:Paint(w,h)
-            if(self:IsHovered())then
+            if (self:IsHovered()) then
                 surface.SetDrawColor(autobox.colors.tan2)
             else
                 surface.SetDrawColor(autobox.colors.tan)
             end
             surface.DrawRect(0,0,w,h)
-            draw.DrawText("Explode","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
+            draw.DrawText("Explode","TristText_Bold",w / 2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
             autobox:CallPlugin("explode",{player})
@@ -146,15 +146,15 @@ function PLUGIN:OpenProfile(player)
         DButton = vgui.Create("DButton",AdminBox)
         DButton:SetText("")
         DButton:SetPos(4,70)
-        DButton:SetSize(AdminBox:GetWide()-8,24)
+        DButton:SetSize(AdminBox:GetWide() - 8,24)
         function DButton:Paint(w,h)
-            if(self:IsHovered())then
+            if (self:IsHovered()) then
                 surface.SetDrawColor(autobox.colors.tan2)
             else
                 surface.SetDrawColor(autobox.colors.tan)
             end
             surface.DrawRect(0,0,w,h)
-            draw.DrawText("Trainfuck","TristText_Bold",w/2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
+            draw.DrawText("Trainfuck","TristText_Bold",w / 2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
             autobox:CallPlugin("trainfuck",{player})
@@ -163,13 +163,13 @@ function PLUGIN:OpenProfile(player)
 end
 
 function PLUGIN:CloseProfile()
-    if(PLUGIN.profile)then
+    if (PLUGIN.profile) then
         PLUGIN.profile:Remove()
     end
 end
 
 function PLUGIN:AAT_OnReload()
-    if(CLIENT)then self:CloseProfile() end
+    if (CLIENT) then self:CloseProfile() end
 end
 
 autobox:RegisterPlugin(PLUGIN)

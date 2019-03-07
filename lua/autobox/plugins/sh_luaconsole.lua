@@ -9,30 +9,30 @@ PLUGIN.command = "luaconsole"
 PLUGIN.perm = "Lua Console"
 
 function PLUGIN:Call(ply,args)
-    if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
-    net.Start('aat_start_console')
+    if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
+    net.Start("aat_start_console")
     net.Send(ply)
 end
 
-if(SERVER)then
-    util.AddNetworkString('aat_lua_console')
-    util.AddNetworkString('aat_start_console')
-    net.Receive('aat_lua_console',function(len,ply)
-        if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
+if (SERVER) then
+    util.AddNetworkString("aat_lua_console")
+    util.AddNetworkString("aat_start_console")
+    net.Receive("aat_lua_console",function(len,ply)
+        if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
         local mode = net.ReadString()
         local str = net.ReadString()
-        local err func = CompileString(str,ply:SteamID().." compiled code'")
-        if(!err)then
-            if(mode=="SERVER" or mode=="SHARED")then
-                local succ info = pcall(func)
+        local err func = CompileString(str,ply:SteamID() .. " compiled code")
+        if (!err) then
+            if (mode == "SERVER" or mode == "SHARED") then
+                local __ info = pcall(func)
             end
-            if(mode=="CLIENT" or mode=="SHARED")then
-                net.Start('aat_lua_console')
+            if (mode == "CLIENT" or mode == "SHARED") then
+                net.Start("aat_lua_console")
                 net.WriteString(str)
                 net.Broadcast()
             end
-            if(mode=="PLAYER")then
-                net.Start('aat_lua_console')
+            if (mode == "PLAYER") then
+                net.Start("aat_lua_console")
                 net.WriteString(str)
                 net.Send(ply)
             end
@@ -40,13 +40,13 @@ if(SERVER)then
     end)
 end
 
-if(CLIENT)then
-    net.Receive('aat_lua_console',function()
+if (CLIENT) then
+    net.Receive("aat_lua_console",function()
         local str = net.ReadString()
-        local err func = CompileString(str,LocalPlayer():SteamID().." compiled code'")
+        local err func = CompileString(str,LocalPlayer():SteamID() .. " compiled code")
         local succ info = pcall(func)
     end)
-    net.Receive('aat_start_console',function()
+    net.Receive("aat_start_console",function()
         local DP = vgui.Create("DFrame")
         DP:SetSize( 600, 300 )
         DP:Center()
@@ -63,10 +63,10 @@ if(CLIENT)then
         local DB = vgui.Create("DButton",DP)
         DB:SetSize(85,25)
         DB:SetPos(510,270)
-        DB:SetText('server run')
+        DB:SetText("server run")
         function DB:DoClick()
-            net.Start('aat_lua_console')
-            net.WriteString('SERVER')
+            net.Start("aat_lua_console")
+            net.WriteString("SERVER")
             net.WriteString(txt:GetText())
             net.SendToServer()
         end
@@ -74,10 +74,10 @@ if(CLIENT)then
         DB = vgui.Create("DButton",DP)
         DB:SetSize(85,25)
         DB:SetPos(510,240)
-        DB:SetText('client run')
+        DB:SetText("client run")
         function DB:DoClick()
-            net.Start('aat_lua_console')
-            net.WriteString('CLIENT')
+            net.Start("aat_lua_console")
+            net.WriteString("CLIENT")
             net.WriteString(txt:GetText())
             net.SendToServer()
         end
@@ -85,10 +85,10 @@ if(CLIENT)then
         DB = vgui.Create("DButton",DP)
         DB:SetSize(85,25)
         DB:SetPos(510,210)
-        DB:SetText('shared run')
+        DB:SetText("shared run")
         function DB:DoClick()
-            net.Start('aat_lua_console')
-            net.WriteString('SHARED')
+            net.Start("aat_lua_console")
+            net.WriteString("SHARED")
             net.WriteString(txt:GetText())
             net.SendToServer()
         end
@@ -96,10 +96,10 @@ if(CLIENT)then
         DB = vgui.Create("DButton",DP)
         DB:SetSize(85,25)
         DB:SetPos(510,180)
-        DB:SetText('run on me')
+        DB:SetText("run on me")
         function DB:DoClick()
-            net.Start('aat_lua_console')
-            net.WriteString('PLAYER')
+            net.Start("aat_lua_console")
+            net.WriteString("PLAYER")
             net.WriteString(txt:GetText())
             net.SendToServer()
         end
