@@ -13,9 +13,9 @@ game.AddParticles( "particles/rockettrail.pcf" )
 PrecacheParticleSystem( "rockettrail" )
 
 function PLUGIN:Call(ply,args)
-    if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
+    if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
     local players = autobox:FindPlayers({unpack(args),ply})
-    if(!autobox:ValidateHasTarget(ply,players))then return end
+    if (!autobox:ValidateHasTarget(ply,players)) then return end
     for _, v in ipairs(players) do
         v:SetMoveType(MOVETYPE_WALK)
         v:SetVelocity(Vector(0,0,4000))
@@ -31,7 +31,7 @@ function PLUGIN:Call(ply,args)
 
             v:StopParticles()
             v:Kill()
-            v:SetFrags(v:Frags()+1)
+            v:SetFrags(v:Frags() + 1)
         end)
     end
     autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has rocketed ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white,".")

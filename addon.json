@@ -1,12 +1,12 @@
 {
-	"title"		:	"AAT (Autobox Admin Tools)",
-	"type"		:	"ServerContent",
-	"info"		:	"A set of admin tools written for the Autobox",
-	"tags"		:	[ "fun"],
-	"ignore"	:
-	[
-		"*.psd",
-		"*.vcproj",
-		"*.svn*"
-	]
+    "title"       :    "AAT (Autobox Admin Tools)",
+    "type"        :    "ServerContent",
+    "info"        :    "A set of admin tools written for the Autobox",
+    "tags"        :    [ "fun"],
+    "ignore"      :
+    [
+        "*.psd",
+        "*.vcproj",
+        "*.svn*"
+    ]
 }

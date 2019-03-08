@@ -9,7 +9,7 @@ PLUGIN.command = "time"
 
 
 function PLUGIN:Call( ply, args )
-	autobox:Notify(ply,{Override = true,Icon = "clock",IconTooltip = "Time"},autobox.colors.white,"It is now ",autobox.colors.red,os.date("%H:%M"),autobox.colors.white,".")
+    autobox:Notify(ply,{Override = true,Icon = "clock",IconTooltip = "Time"},autobox.colors.white,"It is now ",autobox.colors.red,os.date("%H:%M"),autobox.colors.white,".")
 end
 
 autobox:RegisterPlugin( PLUGIN )

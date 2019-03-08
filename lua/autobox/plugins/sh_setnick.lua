@@ -26,11 +26,11 @@ META.Name = META.Nick
 META.GetName = META.Nick
 
 function PLUGIN:Call(ply,args)
-    if(!autobox:ValidatePerm(ply,PLUGIN.perm))then return end
+    if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
     local players = autobox:FindPlayers({args[1],ply})
-    if(!autobox:ValidateSingleTarget(ply,players))then return end
+    if (!autobox:ValidateSingleTarget(ply,players)) then return end
     local nick = table.concat(args," ",2)
-    if(#nick>0)then
+    if (#nick > 0) then
         autobox:Notify( autobox.colors.blue, ply:Nick(), autobox.colors.white, " set the name of ", autobox.colors.red, players[1]:Nick(), autobox.colors.white, " to ", autobox.colors.red, nick, autobox.colors.white, "." )
         players[1]:SetNWString("NickName",nick)
         players[1]:SetNWBool("IsNickNamed",true)
