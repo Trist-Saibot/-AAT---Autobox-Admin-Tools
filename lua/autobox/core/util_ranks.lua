@@ -11,13 +11,24 @@ if (SERVER) then
     util.AddNetworkString("AAT_SyncRanks")
     util.AddNetworkString("AAT_SyncPerms")
     function AAT_Player:AAT_SetRank(rank)
-        if (autobox:SQL_FindRank(rank)) then
+        if (autobox:GetRankInfo(rank)) then
             autobox:SQL_UpdatePlayerRank(self,rank)
             self:SetNWString("AAT_Rank",rank)
         end
     end
+    hook.Add("Initialize","ABX_Rank_Initialization",function()
+        autobox.ranks = autobox:SQL_GetRanks()
+    end)
+    function autobox:GetRankInfo(rank)
+        for _,v in pairs(autobox.ranks) do
+            if (v.Rank == rank) then
+                return v
+            end
+        end
+        return nil
+    end
     function autobox:SetPlayerRankOffline(steamID,rank)
-        if (autobox:SQL_FindRank(rank) and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+")) then
+        if (autobox:GetRankInfo(rank) and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+")) then
             autobox:SQL_UpdatePlayerRankOffline(steamID,rank)
             --update the player if they happen to be logged in also
             for _,v in ipairs(player.GetAll()) do
@@ -35,8 +46,8 @@ if (SERVER) then
         if (type(rank) != "string") then return end --check input for a string
 
         --grab the two ranks from the SQL table
-        local p_rank = autobox:SQL_FindRank(self:AAT_GetRank())
-        local c_rank = autobox:SQL_FindRank(rank)
+        local p_rank = autobox:GetRankInfo(self:AAT_GetRank())
+        local c_rank = autobox:GetRankInfo(rank)
         --check if the rank sent in is valid, the first will(should) always be
         if (c_rank) then
             return p_rank.Immunity > c_rank.Immunity
@@ -50,8 +61,8 @@ if (SERVER) then
         if (type(rank) != "string") then return end --check input for a string
 
         --grab the two ranks from the SQL table
-        local p_rank = autobox:SQL_FindRank(self:AAT_GetRank())
-        local c_rank = autobox:SQL_FindRank(rank)
+        local p_rank = autobox:GetRankInfo(self:AAT_GetRank())
+        local c_rank = autobox:GetRankInfo(rank)
 
         --check if the rank sent in is valid, the first will(should) always be
         if (c_rank) then
@@ -65,7 +76,7 @@ if (SERVER) then
     end
     function autobox:SyncRanks(ply)
         net.Start("AAT_SyncRanks")
-            net.WriteTable(autobox:SQL_GetRanks())
+            net.WriteTable(autobox.ranks)
         net.Send(ply)
     end
     function autobox:SyncPerms(ply)
@@ -78,9 +89,6 @@ if (SERVER) then
             autobox:SyncPerms(ply)
         end
     end)
-    function autobox:GetRankInfo(rank)
-        return autobox:SQL_FindRank(rank)
-    end
 end
 if (CLIENT) then
     net.Receive("AAT_SyncRanks",function()
@@ -126,7 +134,7 @@ end
 --Shared
 function AAT_Player:AAT_GetRank()
     if (!self:IsValid()) then return end
-    if (SERVER and self:IsListenServerHost()) then return "owner" end
+    --if (SERVER and self:IsListenServerHost()) then return "owner" end
     return self:GetNWString("AAT_Rank","guest")
 end
 function AAT_Player:AAT_IsSpecialBoy()

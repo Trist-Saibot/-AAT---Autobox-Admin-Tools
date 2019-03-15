@@ -41,10 +41,8 @@ function PLUGIN:Call(ply,args)
             dmg:SetDamageForce(tDir * 500000)
             dmg:SetInflictor(train)
             dmg:SetAttacker(train)
-            if (v:HasGodMode() or v:Health() == 0) then
-                v:TakeDamageInfo(dmg)
-                v:Kill()
-            end
+            v:TakeDamageInfo(dmg)
+            v:Kill()
             v:TakeDamageInfo(dmg)
             v:SetFrags(v:Frags() + 1)
         end)

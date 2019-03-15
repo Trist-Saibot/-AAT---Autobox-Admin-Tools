@@ -3,7 +3,7 @@ if (SERVER) then
     function autobox:SQL_SetupTables()
         if (!sql.TableExists("AAT_Ranks")) then
             sql.Query("CREATE TABLE AAT_Ranks (`Rank` TEXT,`RankName` TEXT,`Color` TEXT,`Immunity` INTEGER,`Icon` TEXT,CONSTRAINT `PK_Ranks` PRIMARY KEY (`Rank`))")
-            sql.Query("INSERT INTO AAT_Ranks(`Rank`,`RankName`,`Immunity`,`Color`,`Icon`) VALUES ('guest','Guest',0,'#80FFFF','user_add'),('regular','Regular',1,'#80FFA1','user'),('respected','Respected',2,'#80A1FF','user'),('admin','Admin',3,'#464646','shield'),('superadmin','System Admin',4,'#000000','shield_add'),('owner','Owner',5,'#00ABBD','key')")
+            sql.Query("INSERT INTO AAT_Ranks(`Rank`,`RankName`,`Immunity`,`Color`,`Icon`) VALUES ('guest','Guest',0,'#80FFFF','user_add'),('regular','Regular',1,'#80FFA1','user'),('respected','Respected',2,'#80A1FF','user'),('homie','Homie',3,'#FF69B4','user'),('admin','Admin',4,'#464646','shield'),('superadmin','System Admin',5,'#000000','shield_add'),('owner','Owner',6,'#00ABBD','key')")
         end
         if (!sql.TableExists("AAT_Permissions")) then
             sql.Query("CREATE TABLE AAT_Permissions(`Permission` TEXT,`Immunity` INTEGER DEFAULT 5,CONSTRAINT `PK_Permissions` PRIMARY KEY (`Permission`))")
@@ -16,7 +16,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_CheckPerm(rank,perm)
-        if (perm and rank and type(perm) == "string" and type(rank) == "string") then
+        if (type(perm) == "string" and type(rank) == "string") then
             if (rank == "owner") then --owner has every permission
                 return true
             else
@@ -27,7 +27,7 @@ if (SERVER) then
         return nil
     end
     function autobox:SQL_AddPerm(perm)
-        if (perm and type(perm) == "string") then
+        if (type(perm) == "string") then
             local data = sql.Query("SELECT Permission FROM AAT_Permissions WHERE Permission = " .. sql.SQLStr(perm))
             if (!data) then -- if the permission isn't already in the table
                 sql.Query("INSERT INTO AAT_Permissions(Permission) VALUES (" .. sql.SQLStr(perm) .. ")")
@@ -35,13 +35,13 @@ if (SERVER) then
         end
     end
     function autobox:SQL_GetPlayerData(ply)
-        if (ply and ply:IsValid() and ply:IsPlayer()) then
+        if (ply:IsValid() and ply:IsPlayer()) then
                 return sql.QueryRow("SELECT * FROM AAT_Players WHERE SteamID = " .. sql.SQLStr(ply:SteamID()),1)
         end
         return nil
     end
     function autobox:SQL_GetPlayerDataBySteamID(steamid)
-        if (steamid and type(steamid) == "string") then
+        if (type(steamid) == "string") then
                 return sql.QueryRow("SELECT * FROM AAT_Players WHERE SteamID = " .. sql.SQLStr(steamid),1)
         end
         return nil
@@ -63,13 +63,13 @@ if (SERVER) then
         return sql.Query("SELECT * from AAT_Permissions")
     end
     function autobox:SQL_FindRank(rank)
-        if (rank and type(rank) == "string") then
+        if (type(rank) == "string") then
             return sql.QueryRow("SELECT * from AAT_Ranks where Rank = " .. sql.SQLStr(rank),1)
         end
         return nil
     end
     function autobox:SQL_UpdatePlayerRank(ply,rank)
-        if (ply and rank and ply:IsValid() and ply:IsPlayer() and type(rank) == "string") then
+        if (ply:IsValid() and ply:IsPlayer() and type(rank) == "string") then
             sql.Query("UPDATE AAT_Players SET " ..
             "Rank = " .. sql.SQLStr(rank) .. " " ..
             "WHERE SteamID = " .. sql.SQLStr(ply:SteamID())
@@ -77,7 +77,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_UpdatePlayerRankOffline(steamID,rank)
-        if (steamID and rank and type(steamID) == "string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(rank) == "string") then
+        if (type(steamID) == "string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(rank) == "string") then
             sql.Query("UPDATE AAT_Players SET " ..
             "Rank = " .. sql.SQLStr(rank) .. " " ..
             "WHERE SteamID = " .. sql.SQLStr(steamID)
@@ -85,7 +85,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_UpdatePlayerName(steamID,name)
-        if (steamID and name and type(steamID) == "string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(name) == "string") then
+        if (type(steamID) == "string" and string.match(steamID,"STEAM_[0-5]:[0-9]:[0-9]+") and type(name) == "string") then
             sql.Query("UPDATE AAT_Players SET " ..
             "Nick = " .. sql.SQLStr(name) .. " " ..
             "WHERE SteamID = " .. sql.SQLStr(steamID)
@@ -93,7 +93,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_RegisterPlayer(ply)
-        if (ply and ply:IsValid() and ply:IsPlayer()) then
+        if (ply:IsValid() and ply:IsPlayer()) then
             sql.Query("INSERT INTO AAT_Players(SteamID,Nick,Rank,Playtime)" ..
             " VALUES(" ..
             sql.SQLStr(ply:SteamID()) .. "," ..
@@ -104,7 +104,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_UpdatePlaytime(ply,playtime)
-        if (ply and playtime and ply:IsValid() and ply:IsPlayer() and tonumber(playtime)) then
+        if (ply:IsValid() and ply:IsPlayer() and tonumber(playtime)) then
             sql.Query("UPDATE AAT_Players SET " ..
             "Playtime = " .. tonumber(playtime) .. " " ..
             "WHERE SteamID = " .. sql.SQLStr(ply:SteamID())
@@ -112,15 +112,23 @@ if (SERVER) then
         end
     end
     function autobox:SQL_UpdateLastJoin(ply,lastjoin)
-        if (ply and lastjoin and ply:IsValid() and ply:IsPlayer() and tonumber(lastjoin)) then
+        if (ply:IsValid() and ply:IsPlayer() and tonumber(lastjoin)) then
             sql.Query("UPDATE AAT_Players SET " ..
             "LastJoin = " .. tonumber(lastjoin) .. " " ..
             "WHERE SteamID = " .. sql.SQLStr(ply:SteamID())
             )
         end
     end
+    function autobox:SQL_UpdatePerm(perm,immunity)
+        if (type(perm) == "string" and tonumber(immunity)) then
+            sql.Query("UPDATE AAT_Permissions SET " ..
+            "Immunity = " .. tonumber(immunity) .. " " ..
+            "WHERE Permission = " .. sql.SQLStr(perm)
+            )
+        end
+    end
     function autobox:SQL_SaveTimeOnDisconnect(steamid,playtime,lastjoin)
-        if (steamid and playtime and lastjoin and type(steamid) == "string" and tonumber(playtime) and tonumber(lastjoin)) then
+        if (type(steamid) == "string" and tonumber(playtime) and tonumber(lastjoin)) then
             sql.Query("UPDATE AAT_Players SET " ..
             "Playtime = " .. tonumber(playtime) .. "," ..
             "LastJoin = " .. tonumber(lastjoin) .. " " ..
@@ -129,7 +137,7 @@ if (SERVER) then
         end
     end
     function autobox:SQL_Restriction_CheckPerm(ptype,perm)
-        if (type and perm and type(ptype) == "string" and type(perm) == "string") then
+        if (type(ptype) == "string" and type(perm) == "string") then
             local data = sql.QueryRow("SELECT * from AAT_Restrictions where Type = " .. sql.SQLStr(ptype) .. "and Permission = " .. sql.SQLStr(perm),1)
             if (!data) then --instead, create the row if it cannot be found. Give it the default Immunity.
                 sql.Query("INSERT INTO AAT_Restrictions VALUES (" .. sql.SQLStr(ptype) .. "," .. sql.SQLStr(perm) .. ",5)")
@@ -139,6 +147,15 @@ if (SERVER) then
             end
         end
         return nil
+    end
+    function autobox:SQL_Restriction_UpdatePerm(ptype,perm,immunity)
+        if (type(ptype) == "string" and type(perm) == "string" and tonumber(immunity)) then
+            sql.Query("UPDATE AAT_Restrictions SET " ..
+            "Immunity = " .. tonumber(immunity) .. " " ..
+            "WHERE Type = " .. sql.SQLStr(ptype) ..
+            "and Permission = " .. sql.SQLStr(perm)
+            )
+        end
     end
 end
 

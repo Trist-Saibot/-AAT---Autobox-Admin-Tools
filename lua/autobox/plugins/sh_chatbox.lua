@@ -277,7 +277,7 @@ if (CLIENT) then
                 DLabel:SetText("")
                 DLabel:SetColor(col)
                 function DLabel:Paint(w,h)
-                    draw.TextShadow({pos = {0,0},text = text,font = self:GetFont(),col = self:GetColor()},1)
+                    draw.TextShadow({pos = {0,0},text = text,font = self:GetFont(),color = self:GetColor()},1)
                 end
                 local x = DLabel:GetWide()
                 if (self.x + x > self.wide-15) then

@@ -85,7 +85,7 @@ if (CLIENT) then
             panel.buttons = {}
             panel.selected = tonumber(default) or - 1
             if (!numoptions or numoptions < 1) then numoptions = 1 end
-            function panel:Paint() end
+            function panel:Paint(w,h) end
             function panel:OnChange() end
             for i = 1,numoptions do
                 local btn = vgui.Create("DButton",panel)
@@ -103,12 +103,15 @@ if (CLIENT) then
                     self:GetParent():OnChange()
                 end
             end
+
             local DPanel = vgui.Create("DPanel",parent)
-            DPanel:SetSize(100,16)
+            surface.SetFont("default")
+            local width, height = surface.GetTextSize(text)
+            DPanel:SetSize(width * 1.25,height * 1.5)
             DPanel:SetPos(panel:GetPos())
-            DPanel:MoveLeftOf(panel)
+            DPanel:MoveLeftOf(panel,5)
             function DPanel:Paint(w,h)
-                draw.TextShadow({text = text,pos = {w,h / 2.25},xalign = TEXT_ALIGN_RIGHT,yalign = TEXT_ALIGN_CENTER},1)
+                draw.TextShadow({text = text,pos = {w,0},xalign = TEXT_ALIGN_RIGHT,yalign = TEXT_ALIGN_TOP},1)
             end
             return panel
         end
