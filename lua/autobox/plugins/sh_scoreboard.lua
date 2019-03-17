@@ -122,18 +122,7 @@ function PLUGIN:ScoreboardShow()
     end
 
     --determine where our players should sit for later
-    local offsets = {}
-    local oy = 0
-    for _,v in pairs(DATA.onlineRanks) do
-        oy = oy + 24
-        for k,p in pairs(player.GetAll()) do
-            if (p:AAT_GetRank() == v.Rank) then
-                offsets[k] = oy
-                oy = oy + 24
-            end
-        end
-        oy = oy + 8
-    end
+    local offsets = PLUGIN:DetermineOffsets(DATA)
 
     --Panel containing players and their ranks
     local RankPanel = vgui.Create("DPanel",PLUGIN.scoreboard)
@@ -168,6 +157,11 @@ function PLUGIN:ScoreboardShow()
                         surface.SetDrawColor(autobox.colors.tan)
                     end
                     swap = !swap
+                    if (k > #offsets) then
+                        DATA = PLUGIN:GrabPlayerData()
+                        offsets = PLUGIN:DetermineOffsets(DATA)
+                        return
+                    end --fix players joining in and causing an error
                     surface.DrawRect(0,offsets[k],w,24)
                     draw.DrawText(p:Nick(),"TristText_Bold",30,offsets[k],autobox.colors.brown,TEXT_ALIGN_LEFT)
                     surface.SetDrawColor(autobox.colors.black)
@@ -237,22 +231,34 @@ function PLUGIN:ScoreboardShow()
 
     return true
 end
-
+function PLUGIN:DetermineOffsets(DATA)
+    local offsets = {}
+    local oy = 0
+    for _,v in pairs(DATA.onlineRanks) do
+        oy = oy + 24
+        for k,p in pairs(player.GetAll()) do
+            if (p:AAT_GetRank() == v.Rank) then
+                offsets[k] = oy
+                oy = oy + 24
+            end
+        end
+        oy = oy + 8
+    end
+    return offsets
+end
 function PLUGIN:ScoreboardHide()
     self.open = false
     gui.EnableScreenClicker(false)
     PLUGIN.scoreboard:Remove()
 end
-
-
-
-
-
-
-
-
-
-
-
-
+if (CLIENT) then
+    function PLUGIN:Think()
+        if (self.open and self.cachecount != #player.GetAll() ) then
+            self:ScoreboardHide()
+            timer.Simple(0.1,function()
+                self:ScoreboardShow()
+            end)
+        end
+    end
+end
 autobox:RegisterPlugin(PLUGIN)
