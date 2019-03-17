@@ -94,6 +94,7 @@ if (SERVER) then
             end)
 
             ply:SetNWString("AAT_Rank",data.Rank)
+            ply:AAT_FixUserGroup()
             autobox:SyncRanks(ply)
             autobox:SyncPerms(ply)
 
