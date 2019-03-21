@@ -57,7 +57,7 @@ if (CLIENT) then
     PLUGIN.chatOpen = false
 end
 
---disable old scoreboard
+--disable old chat box
 function PLUGIN:HUDShouldDraw(name)
     if (name ==  "CHudChat") then
         return false
@@ -169,7 +169,7 @@ if (CLIENT) then
     function PLUGIN:InitializeChatWindow()
         self.Frame = vgui.Create("DFrame")
         self.Frame:SetSize( ScrW() / 3.5 + 6, 300 + 6 )
-        self.Frame:SetPos(20,ScrH() - 320)
+        self.Frame:SetPos(20,ScrH() - 320 - 100)
         self.Frame:ShowCloseButton(false)
         self.Frame:SetTitle("")
         self.Frame:SetDraggable(false)

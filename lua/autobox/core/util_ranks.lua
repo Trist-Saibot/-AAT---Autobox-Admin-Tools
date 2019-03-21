@@ -4,8 +4,7 @@ if (!autobox.perms) then autobox.perms = {} end
 
 --Tables for adding meta functions to players and entities
 local AAT_Player = FindMetaTable("Player")
-
---local AAT_Entity = FindMetaTable("Entity")
+local AAT_Entity = FindMetaTable("Entity")
 
 if (SERVER) then
     util.AddNetworkString("AAT_SyncRanks")
@@ -166,3 +165,14 @@ function AAT_Player:AAT_BetterThanOrEqual(rank)
     end
     return nil
 end
+
+--CONSOLE FIXES
+function AAT_Entity:Nick() if (!self:IsValid()) then return "Console" end end
+function AAT_Entity:AAT_IsRegular() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_IsRespected() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_IsAdmin() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_IsSuperAdmin() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_IsOwner() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_HasPerm() if (!self:IsValid()) then return true end end
+function AAT_Entity:AAT_GetRank() if (!self:IsValid()) then return "owner" end end
+function AAT_Entity:UniqueID() if (!self:IsValid()) then return 0 end end

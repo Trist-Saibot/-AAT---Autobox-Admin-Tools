@@ -44,6 +44,7 @@ function autobox:RegisterPlugin(plugin)
     if (!plugin.description) then plugin.description = "" end
     plugin.file = currentPlugin
     table.insert(autobox.plugins,plugin)
+    if (plugin.AAT_PostStartup) then plugin:AAT_PostStartup() end --if this plugin has stuff it wants called after being loaded in
 end
 
 function autobox:FindPlugin(str)

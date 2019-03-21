@@ -17,13 +17,17 @@ function PLUGIN:Call(ply,args)
     if (#args < 2) then
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"No weapon specified!")
     --TODO return to this when weapon restrictions are a thing
-    elseif (string.Left(wep,7) != "weapon_") then
+    elseif (!autobox.restrictions.weapon[wep]) then
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"The specified item isn't a weapon!")
     else
-        for _,p in ipairs(players) do
-            p:Give(wep)
+        if (ply:AAT_CanUse("weapon",wep)) then
+            for _,p in ipairs(players) do
+                p:Give(wep)
+            end
+            autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has given ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white," a ",autobox.colors.red,wep,autobox.colors.white,".")
+        else
+            autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,"You are not allowed to spawn this weapon!")
         end
-        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has given ",autobox.colors.red,autobox:CreatePlayerList(players),autobox.colors.white," a ",autobox.colors.red,wep,autobox.colors.white,".")
     end
 end
 

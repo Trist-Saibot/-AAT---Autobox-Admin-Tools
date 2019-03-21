@@ -9,6 +9,7 @@ if (SERVER) then
             if (r and tonumber(autobox:GetRankInfo(self:AAT_GetRank()).Immunity) >= r) then
                 return true
             end
+            if (!r) then return true end --if I'm not managing it, you can use it
         end
         return false
     end
@@ -51,6 +52,10 @@ if (SERVER) then
             for _,v in ipairs(file.Find("weapons/gmod_tool/stools/*.lua","LUA")) do
                 local _,_,c = string.find(v,"([%w_]*).lua")
                 autobox.restrictions.tool[c] = 5
+            end
+            for _,v in ipairs(file.Find("wire/stools/*.lua","LUA")) do --wiremod
+                local _,_,c = string.find(v,"([%w_]*).lua")
+                autobox.restrictions.tool["wire_" .. c] = 5
             end
             for k,v in pairs(autobox.restrictions.tool) do
                 autobox.restrictions.tool[k] = tonumber(autobox:SQL_Restriction_CheckPerm("tool",k)) --set the immunity to any stored immunity, or create the perm if it doesn't exist.
