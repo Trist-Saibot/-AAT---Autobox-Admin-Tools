@@ -10,7 +10,7 @@ PLUGIN.perm = "See Player Names"
 function PLUGIN:HUDPaint()
     if (!LocalPlayer():AAT_HasPerm(PLUGIN.perm)) then return end
     for _,v in ipairs(player.GetAll()) do
-        if ((v != LocalPlayer() and v:Alive()) or LocalPlayer():GetNWBool("AAT_Ragdolled",false)) then
+        if (((v != LocalPlayer() and v:Alive()) or LocalPlayer():GetNWBool("AAT_Ragdolled",false)) and !v:GetNWBool("AAT_Spectating",false) and !v:GetNWBool("AAT_Ghosted",false)) then
             local target = v
             if (v:GetNWBool("AAT_Ragdolled",false) and IsValid(v:GetNWEntity("AAT_Ragdoll",nil))) then
                 target = v:GetNWEntity("AAT_Ragdoll",nil)

@@ -173,6 +173,16 @@ if (CLIENT) then
         self.Frame:ShowCloseButton(false)
         self.Frame:SetTitle("")
         self.Frame:SetDraggable(false)
+        self.Frame.cacheW = ScrW()
+        self.Frame.cacheH = ScrH()
+        function self.Frame:Think()
+            if (self.cacheW != ScrW() or self.cacheH != ScrH()) then
+                self:Remove()
+                timer.Simple(1,function()
+                    PLUGIN:InitializeChatWindow()
+                end)
+            end
+        end
 
         function self.Frame:Paint(w,h)
             surface.SetDrawColor(ColorAlpha(autobox.colors.discord[4],PLUGIN.alpha))

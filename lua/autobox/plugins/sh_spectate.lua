@@ -12,12 +12,12 @@ PLUGIN.usage = "<player> or nothing to disable"
 function PLUGIN:Call(ply,args)
     if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
     local players = autobox:FindPlayers({args[1]})
-    if (#players == 0 and ply.AAT_Spectating) then
+    if (#players == 0 and ply:GetNWBool("AAT_Spectating",false)) then
         --cancel spectating if no args
         ply:Spectate( OBS_MODE_NONE )
         ply:UnSpectate()
         ply:SetMoveType( MOVETYPE_WALK )
-        ply.AAT_Spectating = false
+        ply:SetNWBool("AAT_Spectating",false)
         ply:Spawn()
         timer.Simple(0.05, function() ply:SetPos(ply.AAT_SpecOrigPos) ply.AAT_SpecOrigPos = nil end)
         return
@@ -29,7 +29,7 @@ function PLUGIN:Call(ply,args)
     end
     --initiate spectating
     ply.AAT_SpecOrigPos = ply:GetPos()
-    ply.AAT_Spectating = true
+    ply:SetNWBool("AAT_Spectating", true)
     ply:Spectate( OBS_MODE_CHASE )
     ply:SpectateEntity(players[1])
     ply:SetMoveType( MOVETYPE_OBSERVER )

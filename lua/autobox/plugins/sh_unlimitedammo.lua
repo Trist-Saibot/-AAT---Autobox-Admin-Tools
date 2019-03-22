@@ -18,7 +18,7 @@ function PLUGIN:Call(ply,args)
         v.AAT_UnlimitedAmmo = enabled
         if (enabled) then
             for _,w in ipairs(v:GetWeapons()) do
-                self:FillClips(v,w)
+                if (w:IsValid()) then self:FillClips(v,w) end
             end
         end
     end
@@ -31,6 +31,7 @@ end
 
 function PLUGIN:FillClips(ply,wep)
     --taken straight from evolve's uammo
+    if (!wep:IsValid()) then return end
     if (wep:Clip1() < 250) then wep:SetClip1(250) end
     if (wep:Clip2() < 250) then wep:SetClip2(250) end
 
