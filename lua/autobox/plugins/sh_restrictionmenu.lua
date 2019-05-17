@@ -6,13 +6,8 @@ PLUGIN.title = "Restriction Menu"
 PLUGIN.author = "Trist"
 PLUGIN.description = "Display the restriction menu"
 PLUGIN.perm = "Display Restriction Menu"
-PLUGIN.command = "rmenu"
 
 if (CLIENT) then
-    net.Receive("AAT_OpenRMenu",function()
-        if (!autobox:ValidatePerm(LocalPlayer(),PLUGIN.perm)) then return end
-        PLUGIN:OpenRMenu()
-    end)
     function PLUGIN:OpenRMenu()
 
         self:CloseRMenu()
@@ -182,15 +177,26 @@ if (CLIENT) then
     function PLUGIN:AAT_OnReload()
         self:CloseRMenu()
     end
+    function PLUGIN:InitPostEntity()
+        if (LocalPlayer():AAT_IsSpecialBoy()) then
+        list.Set("DesktopWindows","AAT_RMenu",{
+            title = "Restriction Menu",
+            icon = "autobox/icon64/mitch.png",
+            init = function(icon,window)
+                window:Remove()
+                if (!autobox:ValidatePerm(LocalPlayer(),PLUGIN.perm)) then return end
+                PLUGIN:OpenRMenu()
+            end
+        })
+        CreateContextMenu()
+        end
+    end
+
+
+
 end
 if (SERVER) then
     util.AddNetworkString("AAT_RMenu_PermUpdate")
-    util.AddNetworkString("AAT_OpenRMenu")
-    function PLUGIN:Call(ply,args)
-        if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
-        net.Start("AAT_OpenRMenu")
-        net.Send(ply)
-    end
     net.Receive("AAT_RMenu_PermUpdate",function(len,ply)
         local perm = net.ReadString()
         local immunity = net.ReadString()

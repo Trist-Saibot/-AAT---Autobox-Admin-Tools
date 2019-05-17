@@ -126,12 +126,13 @@ if (SERVER) then
             autobox:Notify(autobox.colors.white,"The plugin ",autobox.colors.red,v,autobox.colors.white," was Hotloaded.")
         end
     end
-    function autobox:CallPlugin(plug,ply,args)
+    function autobox:CallPlugin(plug,ply,...)
         local plugin = autobox:FindPlugin(plug)
-        if (plugin and ply:IsValid() and plugin.Call) then
+        local args = {...}
+        if (plugin and plugin.Call) then
             plugin:Call(ply,args)
         else
-            autobox:DebugPrint( plugin .. " not found.")
+            autobox:DebugPrint( plug .. " not found.")
         end
     end
     net.Receive("AAT_CallPlugin",function(len,ply)

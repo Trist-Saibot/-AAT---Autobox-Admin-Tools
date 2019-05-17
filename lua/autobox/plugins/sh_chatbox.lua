@@ -78,6 +78,30 @@ function PLUGIN:StartChat()
     end
 end
 
+if (SERVER) then
+    util.AddNetworkString("AAT_PlayerSay")
+    net.Receive("AAT_PlayerSay",function(len,ply)
+        local msg = net.ReadString()
+        ply:Say(msg)
+    end)
+end
+if (CLIENT) then
+    function PLUGIN:ForceSay(msg)
+        net.Start("AAT_PlayerSay")
+            net.WriteString(msg)
+        net.SendToServer()
+    end
+end
+
+
+
+
+
+
+
+
+
+
 --kidnaps the player's input for chat opening
 function PLUGIN:PlayerBindPress(ply,bind,pressed)
     local team = false
@@ -430,7 +454,7 @@ if (CLIENT) then
                 return true
             elseif (code ==  KEY_ENTER) then
                 if (string.Trim(self:GetText()) != "") then
-                    LocalPlayer():ConCommand("say " .. self:GetText())
+                    PLUGIN:ForceSay(self:GetText())
                 end
                 hook.Run("FinishChat")
                 return true

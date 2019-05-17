@@ -2,10 +2,16 @@ resource.AddFile( "materials/autobox/scoreboard/gear.vtf")
 resource.AddFile( "materials/autobox/scoreboard/gear.vmt")
 resource.AddFile( "materials/autobox/scoreboard/logo.vtf")
 resource.AddFile( "materials/autobox/scoreboard/logo.vmt")
+--[[
 resource.AddFile( "materials/autobox/scoreboard/icons/steam.vtf")
 resource.AddFile( "materials/autobox/scoreboard/icons/steam.vmt")
 resource.AddFile( "materials/autobox/scoreboard/icons/discord.vtf")
 resource.AddFile( "materials/autobox/scoreboard/icons/discord.vmt")
+]]
+resource.AddFile( "materials/autobox/scoreboard/icons/steam.png")
+resource.AddFile( "materials/autobox/scoreboard/icons/discord.png")
+resource.AddFile( "materials/autobox/scoreboard/icons/patreon.png")
+
 -----
 --Display a custom scoreboard
 -----
@@ -29,8 +35,9 @@ end
 if (CLIENT) then
     PLUGIN.icon_gear     = surface.GetTextureID("autobox/scoreboard/gear")
     PLUGIN.icon_logo     = surface.GetTextureID("autobox/scoreboard/logo")
-    PLUGIN.icon_steam    = surface.GetTextureID("autobox/scoreboard/icons/steam")
-    PLUGIN.icon_discord    = surface.GetTextureID("autobox/scoreboard/icons/discord")
+    PLUGIN.icon_steam    = Material("autobox/scoreboard/icons/steam.png")
+    PLUGIN.icon_discord  = Material("autobox/scoreboard/icons/discord.png")
+    PLUGIN.icon_patreon  = Material("autobox/scoreboard/icons/patreon.png")
     PLUGIN.cachecount = 0
     PLUGIN.open = false
     function PLUGIN:Think()
@@ -102,7 +109,7 @@ function PLUGIN:ScoreboardShow()
         surface.PlaySound( "ambient/levels/canals/drip" .. math.random(1,4) .. ".wav" )
     end
     function DiscordButton:Paint(w,h)
-        surface.SetTexture(PLUGIN.icon_discord)
+        surface.SetMaterial(PLUGIN.icon_discord)
         surface.DrawTexturedRect(0,0,w,h)
     end
 
@@ -117,7 +124,22 @@ function PLUGIN:ScoreboardShow()
         surface.PlaySound( "ambient/levels/canals/drip" .. math.random(1,4) .. ".wav" )
     end
     function SteamButton:Paint(w,h)
-        surface.SetTexture(PLUGIN.icon_steam)
+        surface.SetMaterial(PLUGIN.icon_steam)
+        surface.DrawTexturedRect(0,0,w,h)
+    end
+
+    local PatreonButton = vgui.Create("DButton",TopPanel)
+    PatreonButton:SetPos(TopPanel:GetWide() - 59,TopPanel:GetTall() - 21)
+    PatreonButton:SetSize(16,16)
+    PatreonButton:SetText("")
+    PatreonButton:SetTooltip("Copy our Patreon link")
+    function PatreonButton:DoClick()
+        SetClipboardText(autobox.Link_Patreon)
+        notification.AddLegacy("Patreon link copied to clipboard!",3,2)
+        surface.PlaySound( "ambient/levels/canals/drip" .. math.random(1,4) .. ".wav" )
+    end
+    function PatreonButton:Paint(w,h)
+        surface.SetMaterial(PLUGIN.icon_patreon)
         surface.DrawTexturedRect(0,0,w,h)
     end
 

@@ -5,6 +5,7 @@ autobox.debug = true
 autobox.debugPrint = {}
 autobox.Link_Steam = "https://steamcommunity.com/groups/autobox"
 autobox.Link_Discord = "https://discord.gg/0MDyYmYSbGz4V9RG"
+autobox.Link_Patreon = "https://www.patreon.com/autobox"
 
 --Utility
 function autobox:PrettyConsole( ... )
