@@ -1,3 +1,4 @@
+resource.AddFile( "materials/autobox/icon64/mitch.png")
 -----
 --Display the restriction menu
 -----

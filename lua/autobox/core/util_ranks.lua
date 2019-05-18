@@ -97,7 +97,7 @@ end
 --Shared
 function AAT_Player:AAT_GetRank()
     if (!self:IsValid()) then return end
-    --if (SERVER and self:IsListenServerHost()) then return "owner" end
+    if (SERVER and self:IsListenServerHost()) then return "owner" end
     return self:GetNWString("AAT_Rank","guest")
 end
 function AAT_Player:AAT_IsSpecialBoy()
