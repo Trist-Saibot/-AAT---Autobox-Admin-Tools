@@ -9,6 +9,9 @@ PLUGIN.perm = "No Limits"
 PLUGIN.command = "nolimits"
 PLUGIN.usage = "<player> [1/0]"
 
+--TODO:fix later
+
+--[[
 function PLUGIN:Call( ply, args )
     if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
     local players = autobox:FindPlayers({unpack(args),ply})
@@ -49,5 +52,5 @@ if (SERVER) then
         end
     end
 end
-
+]]
 autobox:RegisterPlugin( PLUGIN )

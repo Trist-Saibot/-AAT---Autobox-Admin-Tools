@@ -137,8 +137,8 @@ if (SERVER) then
     end
     net.Receive("AAT_CallPlugin",function(len,ply)
         local plugin = net.ReadString(plugin)
-        local args = net.ReadTable() or nil
-        autobox:CallPlugin(plugin,ply,args)
+        local args = net.ReadTable()
+        autobox:CallPlugin(plugin,ply,unpack(args))
     end)
 end
 

@@ -20,7 +20,7 @@ function PLUGIN:Call(ply,args)
         autobox:Notify( ply, pink, players[1]:Nick() .. " >> " .. msg)
         autobox:Notify( players[1], pink, ply:Nick() .. " << " .. msg)
         for _,v in ipairs(player.GetAll()) do
-            if (v:AAT_IsSpecialBoy()) then
+            if (v:AAT_IsSpecialBoy() and v != ply and v != players[1]) then
                 autobox:Notify( v, pink, ply:Nick() .. " >> " .. players[1]:Nick() .. ": " .. msg)
             end
         end

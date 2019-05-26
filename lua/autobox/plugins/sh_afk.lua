@@ -7,7 +7,7 @@ PLUGIN.author = "Trist"
 PLUGIN.description = "Show your status as AFK"
 PLUGIN.command = "afk"
 
-PLUGIN.afkTime = 15 --15 seconds, bob told me to
+PLUGIN.afkTime = 600 --15 seconds, bob told me to
 
 function PLUGIN:Call(ply)
     ply.AAT_AFKTimer = CurTime() - self.afkTime

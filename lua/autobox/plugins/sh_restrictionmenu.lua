@@ -204,6 +204,7 @@ if (SERVER) then
         PLUGIN:UpdatePermission(ply,perm,immunity)
     end)
     function PLUGIN:UpdatePermission(ply,perm,immunity)
+        if (!IsValid(ply)) then return end
         if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end --make sure the player isn't somehow cheating
         autobox:SQL_UpdatePerm(perm,immunity)
         for _,v in ipairs(player.GetAll()) do
@@ -213,35 +214,41 @@ if (SERVER) then
 
     --Restriction Block
     function PLUGIN:PlayerGiveSWEP(ply,wep)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("weapon",wep)) then
             autobox:Notify(ply,autobox.colors.red,"You are not allowed to spawn this weapon!")
             return false
         end
     end
     function PLUGIN:PlayerSpawnSWEP(ply,wep)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("weapon",wep)) then
             autobox:Notify(ply,autobox.colors.red,"You are not allowed to spawn this weapon!")
             return false
         end
     end
     function PLUGIN:PlayerSpawnSENT(ply,class)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("entity",class)) then
             autobox:Notify(ply,autobox.colors.red,"You are not allowed to spawn this entity!")
             return false
         end
     end
     function PLUGIN:PlayerCanPickupWeapon(ply,wep)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("weapon",wep:GetClass())) then
             return false
         end
     end
     function PLUGIN:PlayerSpawnNPC(ply,npc,wep)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("weapon",wep)) then
             autobox:Notify(ply,autobox.colors.red,"You are not allowed to spawn an NPC with this weapon!")
             return false
         end
     end
     function PLUGIN:CanTool(ply,tr,tool)
+        if (!IsValid(ply)) then return end
         if (!ply:AAT_CanUse("tool",tool)) then
             autobox:Notify(ply,autobox.colors.red,"You are not allowed to use this tool!")
             return false

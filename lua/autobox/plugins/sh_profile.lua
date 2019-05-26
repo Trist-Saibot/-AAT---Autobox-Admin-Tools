@@ -64,6 +64,8 @@ function PLUGIN:OpenProfile(player)
         draw.DrawText("[" .. autobox:GetRankInfo(player:AAT_GetRank()).RankName .. "]","TristText_Bold",9,45,autobox.colors.brown,TEXT_ALIGN_LEFT)
         draw.DrawText(autobox:FormatTime(player:AAT_GetPlaytime()),"TristText_Bold",9,65,autobox.colors.brown,TEXT_ALIGN_LEFT)
 
+        draw.DrawText("right click to copy info","TristText_Bold",InfoBox:GetWide() - 9,InfoBox:GetTall() - 16 - 9,autobox.colors.brown,TEXT_ALIGN_RIGHT)
+
         InfoBox.count = 0
         for _,ent in ipairs(ents.GetAll()) do
             if (ent:GetNWString("AAT_Owner") == player:SteamID()) then
@@ -72,6 +74,12 @@ function PLUGIN:OpenProfile(player)
         end
         draw.DrawText("Entities: " .. InfoBox.count,"TristText_Bold",9,85,autobox.colors.brown,TEXT_ALIGN_LEFT)
     end
+    function InfoBox:OnMouseReleased(keyCode)
+        if (keyCode == MOUSE_RIGHT) then
+            PLUGIN:AAT_OpenDMenu(player)
+        end
+    end
+
 
     local BadgeBox = vgui.Create("DPanel",Frame)
     BadgeBox:SetSize(440,295)
@@ -122,7 +130,7 @@ function PLUGIN:OpenProfile(player)
         end
         function DButton:DoClick()
             if (player:IsValid()) then
-                autobox:CallPlugin("kick",{player})
+                autobox:CallPlugin("kick",{player:SteamID()})
             end
         end
 
@@ -140,7 +148,7 @@ function PLUGIN:OpenProfile(player)
             draw.DrawText("Explode","TristText_Bold",w / 2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            autobox:CallPlugin("explode",{player})
+            autobox:CallPlugin("explode",{player:SteamID()})
         end
 
         DButton = vgui.Create("DButton",AdminBox)
@@ -157,9 +165,19 @@ function PLUGIN:OpenProfile(player)
             draw.DrawText("Trainfuck","TristText_Bold",w / 2,0,autobox.colors.brown,TEXT_ALIGN_CENTER)
         end
         function DButton:DoClick()
-            autobox:CallPlugin("trainfuck",{player})
+            autobox:CallPlugin("trainfuck",{player:SteamID()})
         end
     end
+end
+
+function PLUGIN:AAT_OpenDMenu(ply)
+    local menu = DermaMenu()
+    menu:AddOption( "Copy SteamID", function()
+        SetClipboardText(ply:SteamID())
+        notification.AddLegacy("SteamID copied to clipboard!",3,2)
+        surface.PlaySound( "ambient/levels/canals/drip" .. math.random(1,4) .. ".wav" )
+    end)
+    menu:Open()
 end
 
 function PLUGIN:CloseProfile()
