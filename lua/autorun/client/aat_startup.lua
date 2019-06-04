@@ -74,3 +74,4 @@ include("aat_framework.lua")
 --Initialize
 autobox:LoadCore()
 autobox:LoadPlugins()
+hook.Run("AAT_LoadOthers")

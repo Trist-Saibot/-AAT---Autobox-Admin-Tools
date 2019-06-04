@@ -14,6 +14,7 @@ if (SERVER) then
         if (!sql.TableExists("AAT_Restrictions")) then
             sql.Query("CREATE TABLE AAT_Restrictions(`Type` TEXT,`Permission` TEXT,`Immunity` INTEGER DEFAULT 5,CONSTRAINT `PK_Restrictions` PRIMARY KEY (`Type`,`Permission`))")
         end
+        hook.Run("AAT_SetupSQLTables")
     end
     function autobox:SQL_CheckPerm(rank,perm)
         if (type(perm) == "string" and type(rank) == "string") then

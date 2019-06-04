@@ -59,7 +59,7 @@ function PLUGIN:ScoreboardShow()
     local DATA = self:GrabPlayerData()
     local TopH = 150
     local Margin = 5
-    local Length = 720 + Margin * 2
+    local Length = 720 + Margin * 2 + 16 * 8
     local Height = 20 + TopH + (#DATA.onlineRanks * 32) + (self.cachecount * 24) + Margin * 2
 
 
@@ -209,10 +209,43 @@ function PLUGIN:ScoreboardShow()
 
 
     for k,v in pairs(player.GetAll()) do
-        local Avatar = vgui.Create("AvatarImage",PLUGIN.scoreboard)
-        Avatar:SetSize(16,16)
         local x,y = RankPanel:GetPos()
-        Avatar:SetPos(x + 4,y + offsets[k] + 4)
+
+        local PlayerBar = vgui.Create("DPanel",PLUGIN.scoreboard)
+        PlayerBar:SetPos(x,y + offsets[k])
+        PlayerBar:SetSize(RankPanel:GetWide(),24)
+        function PlayerBar:Paint(w,h) end
+        function PlayerBar:OnMouseReleased(keyCode)
+            if (keyCode == MOUSE_RIGHT) then
+                local menu = DermaMenu()
+                menu:AddOption( "Copy SteamID", function()
+                    SetClipboardText(v:SteamID())
+                    notification.AddLegacy("SteamID copied to clipboard!",3,2)
+                    surface.PlaySound( "ambient/levels/canals/drip" .. math.random(1,4) .. ".wav" )
+                end)
+                if (autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin")) then
+                    local submenu = menu:AddSubMenu("Admin Panel")
+                    local ki = submenu:AddOption( "Kick", function()
+                        autobox:CallPlugin("kick",{v:SteamID()})
+                    end)
+                    ki:SetIcon("materials/icon16/cancel.png")
+                    local e = submenu:AddOption( "Explode", function()
+                        autobox:CallPlugin("explode",{v:SteamID()})
+                    end)
+                    e:SetIcon("materials/icon16/bomb.png")
+                    local t = submenu:AddOption( "Trainfuck", function()
+                        autobox:CallPlugin("trainfuck",{v:SteamID()})
+                    end)
+                    t:SetIcon("materials/icon16/car.png")
+                end
+                menu:Open()
+            end
+        end
+
+
+        local Avatar = vgui.Create("AvatarImage",PlayerBar)
+        Avatar:SetSize(16,16)
+        Avatar:SetPos(4,4)
         Avatar:SetPlayer(v,32)
 
         local AvatarButton = vgui.Create("DButton",Avatar)
@@ -226,10 +259,9 @@ function PLUGIN:ScoreboardShow()
             surface.PlaySound("buttons/lightswitch2.wav")
             PLUGIN:ScoreboardHide()
         end
-
-        local Mute = vgui.Create("DImageButton",PLUGIN.scoreboard)
+        local Mute = vgui.Create("DImageButton",PlayerBar)
         Mute:SetSize(16,16)
-        Mute:SetPos(Length-36,y + offsets[k] + 4)
+        Mute:SetPos(Length-40,4)
         if (v:IsMuted()) then
             Mute:SetImage( "icon32/muted.png" )
             Mute:SetTooltip("Unmute this player")
@@ -248,6 +280,27 @@ function PLUGIN:ScoreboardShow()
             end
             ChangeTooltip(Mute)
             surface.PlaySound("buttons/lightswitch2.wav")
+        end
+
+        if (!v:IsBot()) then
+            local BadgeBox = vgui.Create("DPanel",PlayerBar)
+            BadgeBox:SetSize(16 * 7,24)
+            BadgeBox:SetPos(Length-384 - 16 * 7,0)
+            function BadgeBox:Paint(w,h) end
+            local badges = v:AAT_GetDisplayedBadges()
+            local c = 0
+            for key,value in ipairs(badges) do
+                local badge = vgui.Create("DPanel",BadgeBox)
+                badge:SetSize(16,16)
+                badge:SetPos(c * 16,4)
+                function badge:Paint(w,h)
+                    surface.SetMaterial(autobox.badge:GetIcon(value,v))
+                    surface.DrawTexturedRect(0,0,16,16)
+                end
+                badge:SetTooltip(autobox.badge:GetDesc(value,v))
+                c = c + 1
+            end
+            BadgeBox:SetMouseInputEnabled( false )
         end
     end
 

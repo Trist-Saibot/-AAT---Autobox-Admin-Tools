@@ -103,6 +103,11 @@ if (SERVER) then
         end
     end)
 
+    hook.Add("PlayerDisconnected", "AAT_DisconnectMessage", function(ply)
+        autobox:Notify(autobox.colors.blue,ply:Nick(),autobox.colors.white," has disconnected.")
+    end)
+
+
     gameevent.Listen("player_changename")
     hook.Add("player_changename","AAT_OnNameChange",function(data)
         local ply = Player(data.userid)
@@ -111,4 +116,11 @@ if (SERVER) then
         autobox:Notify(autobox.colors.blue,oldname,autobox.colors.white," changed their name to ",autobox.colors.red,newname,autobox.colors.white,".")
         autobox:SQL_UpdatePlayerName(ply:SteamID(),newname)
     end)
+end
+
+--overwrite player connection
+if (CLIENT) then
+    hook.Add( "ChatText", "hide_joinleave", function( index, name, text, typ )
+        if ( typ == "joinleave" ) then return true end
+    end )
 end

@@ -1,0 +1,1 @@
+autobox.badge:RegisterBadge("early_supporter","Early Supporter","You helped our patreon out near the start of the campaign!",nil,"autobox/scoreboard/icons/patreon.png")

@@ -84,12 +84,38 @@ function PLUGIN:OpenProfile(player)
     local BadgeBox = vgui.Create("DPanel",Frame)
     BadgeBox:SetSize(440,295)
     BadgeBox:SetPos(10,150)
+    if (!player:IsBot()) then
+        local badges = player:AAT_GetBadges()
+        if (#badges > 0) then
+            local c = 0
+            for _,v in ipairs(badges) do
+                local badge = vgui.Create("DPanel",BadgeBox)
+                badge:SetPos(c * 42 + 8,8)
+                badge:SetSize(32,32)
+                function badge:Paint(w,h)
+                    surface.SetDrawColor(autobox.colors.discord[4])
+                    surface.DrawRect(2,2,w - 4,h - 4)
+                    autobox.draw:DrawBorder(0,0,w,h,255)
+                    surface.SetDrawColor(255,255,255,255)
+                    surface.SetMaterial(autobox.badge:GetIcon(v,player))
+                    surface.DrawTexturedRect(8,8,16,16)
+                end
+                badge:SetTooltip(autobox.badge:GetDesc(v,player))
+                function badge:OnMouseReleased(keyCode)
+                    if (keyCode == MOUSE_RIGHT) then
+                        PLUGIN:AAT_OpenBMenu(v)
+                    end
+                end
+                c = c + 1
+            end
+        end
+    end
     function BadgeBox:Paint(w,h)
         surface.SetDrawColor(autobox.colors.brown)
         surface.DrawRect(0,0,w,h)
         surface.SetDrawColor(autobox.colors.tan2)
         surface.DrawRect(4,4,w-8,h-8)
-        draw.DrawText("Badge Box Coming Soon™","TristText_Bold",w-9,h-25,autobox.colors.brown,TEXT_ALIGN_RIGHT)
+        --draw.DrawText("Badge Box Coming Soon™","TristText_Bold",w-9,h-25,autobox.colors.brown,TEXT_ALIGN_RIGHT)
     end
 
     local AvatarPanel = vgui.Create("DPanel",Frame)
@@ -104,7 +130,6 @@ function PLUGIN:OpenProfile(player)
     Avatar:SetSize(128,128)
     Avatar:SetPos(4,4)
     Avatar:SetPlayer(player,128)
-
     if (autobox:HasImmunity(LocalPlayer():AAT_GetRank(),"admin")) then
         local AdminBox = vgui.Create("DPanel",Frame)
         AdminBox:SetSize(200,98)
@@ -168,6 +193,22 @@ function PLUGIN:OpenProfile(player)
             autobox:CallPlugin("trainfuck",{player:SteamID()})
         end
     end
+end
+
+function PLUGIN:AAT_OpenBMenu(BadID)
+    local menu = DermaMenu()
+    local isdisp = LocalPlayer():AAT_BadgeDisplayed(BadID)
+    local text = "Display on scoreboard"
+    if (isdisp) then text = "Remove from scoreboard" end
+    local opt = menu:AddOption( text, function()
+        autobox.badge:ToggleBadgeDisplay(BadID)
+    end)
+    if (isdisp) then
+        opt:SetIcon("materials/icon16/cancel.png")
+    else
+        opt:SetIcon("materials/icon16/accept.png")
+    end
+    menu:Open()
 end
 
 function PLUGIN:AAT_OpenDMenu(ply)

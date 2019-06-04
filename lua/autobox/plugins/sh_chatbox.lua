@@ -9,7 +9,6 @@ PLUGIN.description = "Changes the default chat box"
 PLUGIN.suggestions = {}
 
 if (CLIENT) then
-    --make sure the tab closes when it needs to
     if (!autobox.OnChatText) then
         autobox.OnChatText = chat.AddText
     end
