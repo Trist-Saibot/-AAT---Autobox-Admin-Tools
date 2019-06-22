@@ -282,7 +282,7 @@ function PLUGIN:ScoreboardShow()
             surface.PlaySound("buttons/lightswitch2.wav")
         end
 
-        if (!v:IsBot()) then
+        if (v:IsValid() and !v:IsBot()) then
             local BadgeBox = vgui.Create("DPanel",PlayerBar)
             BadgeBox:SetSize(16 * 7,24)
             BadgeBox:SetPos(Length-384 - 16 * 7,0)
@@ -298,6 +298,7 @@ function PLUGIN:ScoreboardShow()
                     surface.DrawTexturedRect(0,0,16,16)
                 end
                 badge:SetTooltip(autobox.badge:GetDesc(value,v))
+                badge:SetMouseInputEnabled( true )
                 c = c + 1
             end
             BadgeBox:SetMouseInputEnabled( false )

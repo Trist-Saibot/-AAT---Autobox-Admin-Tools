@@ -112,8 +112,10 @@ end
 
 function AAT_Player:AAT_GetDisplayedBadges()
     local badges = {}
-    for k,_ in pairs(autobox.badge.progress[self:SteamID()]) do
-        if (self:AAT_HasBadge(k,self) and self:AAT_BadgeDisplayed(k)) then badges[#badges + 1] = k end
+    if (autobox.badge.progress[self:SteamID()]) then --check for table existence
+        for k,_ in pairs(autobox.badge.progress[self:SteamID()]) do
+            if (self:AAT_HasBadge(k,self) and self:AAT_BadgeDisplayed(k)) then badges[#badges + 1] = k end
+        end
     end
     return badges
 end

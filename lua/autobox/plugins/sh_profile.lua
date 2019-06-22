@@ -102,7 +102,7 @@ function PLUGIN:OpenProfile(player)
                 end
                 badge:SetTooltip(autobox.badge:GetDesc(v,player))
                 function badge:OnMouseReleased(keyCode)
-                    if (keyCode == MOUSE_RIGHT) then
+                    if (keyCode == MOUSE_RIGHT and LocalPlayer() == player) then
                         PLUGIN:AAT_OpenBMenu(v)
                     end
                 end

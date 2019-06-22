@@ -1,4 +1,12 @@
 --various generic draw functions
+if (SERVER) then
+    for _,v in pairs(file.Find("materials/autobox/icon16/*.png","GAME")) do
+        resource.AddFile( "materials/autobox/icon16/" .. v)
+    end
+    for _,v in pairs(file.Find("materials/autobox/ui/*.png","GAME")) do
+        resource.AddFile( "materials/autobox/ui/" .. v)
+    end
+end
 if (CLIENT) then
     autobox.draw = {}
     autobox.draw.borderMat = Material("autobox/ui/border.png")

@@ -2,7 +2,7 @@
 --allows for more consistency
 
 function autobox:ValidatePerm(ply,perm)
-    if (ply:AAT_HasPerm(perm)) then
+    if (!ply:IsValid() or ply:AAT_HasPerm(perm)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
@@ -39,7 +39,7 @@ function autobox:ValidatePlayerFound(ply,target)
 end
 
 function autobox:ValidateBetterThan(ply,target)
-    if (ply:AAT_BetterThan(target)) then
+    if (!ply:IsValid() or ply:AAT_BetterThan(target)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
@@ -48,7 +48,7 @@ function autobox:ValidateBetterThan(ply,target)
 end
 
 function autobox:ValidateBetterThanOrEqual(ply,target)
-    if (ply:AAT_BetterThanOrEqual(target)) then
+    if (!ply:IsValid() or ply:AAT_BetterThanOrEqual(target)) then
         return true
     else
         autobox:Notify(ply,autobox.chatConst.err,autobox.colors.red,autobox.chatConst.notallowed)
