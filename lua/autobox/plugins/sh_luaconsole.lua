@@ -21,6 +21,7 @@ if (SERVER) then
         if (!autobox:ValidatePerm(ply,PLUGIN.perm)) then return end
         local mode = net.ReadString()
         local str = net.ReadString()
+        local tar = net.ReadEntity() or nil
         local err func = CompileString(str,ply:SteamID() .. " compiled code")
         if (!err) then
             if (mode == "SERVER" or mode == "SHARED") then
@@ -35,6 +36,11 @@ if (SERVER) then
                 net.Start("aat_lua_console")
                 net.WriteString(str)
                 net.Send(ply)
+            end
+            if (tar and tar:IsValid() and tar:IsPlayer()) then
+                net.Start("aat_lua_console")
+                net.WriteString(str)
+                net.Send(tar)
             end
         end
     end)
@@ -102,6 +108,44 @@ if (CLIENT) then
             net.WriteString("PLAYER")
             net.WriteString(txt:GetText())
             net.SendToServer()
+        end
+
+        local curtar = nil
+
+        DB = vgui.Create("DButton",DP)
+        DB:SetSize(85,25)
+        DB:SetPos(510,150)
+        DB:SetText("run on target")
+        function DB:DoClick()
+            net.Start("aat_lua_console")
+            net.WriteString("TARGET")
+            net.WriteString(txt:GetText())
+            net.WriteEntity(curtar or nil)
+            net.SendToServer()
+        end
+
+        local DC = vgui.Create("DComboBox", DP)
+        DC:SetSize(85,25)
+        DC:SetPos(510,120)
+        DC:SetValue("target")
+        function DC:RepopList()
+            local _,data = self:GetSelected()
+            if (!data or !data:IsValid()) then
+                self:Clear()
+            end
+            for _,v in ipairs(player.GetAll()) do
+                if (!v:IsBot()) then
+                    DC:AddChoice(v:Name(),v)
+                end
+            end
+        end
+        DC:RepopList()
+        function DC:OnSelect(index,value,ply)
+            if (ply:IsValid()) then
+                curtar = ply
+            else
+                self:RepopList()
+            end
         end
     end)
 end

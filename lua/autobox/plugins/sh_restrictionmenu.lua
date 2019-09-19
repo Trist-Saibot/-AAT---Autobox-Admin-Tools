@@ -48,7 +48,7 @@ if (CLIENT) then
                 surface.SetDrawColor(colors[self.colind])
                 surface.DrawRect(0,0,w,h)
             end
-            local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,v.Permission,#autobox.ranks-1,v.Immunity + 1)
+            local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,v.Permission,#autobox.ranks-1,v.Immunity + 1,{"guest","regular","respected","homie","admin","superadmin"})
             function rbox:OnChange()
                 PLUGIN:UpdatePermission(v.Permission,self.selected - 1)
             end
@@ -63,27 +63,103 @@ if (CLIENT) then
             surface.DrawRect(0,0,w,h)
         end
         autobox.draw:CustomVBar(frame)
+
+
+        --https://github.com/Facepunch/garrysmod/blob/master/garrysmod/gamemodes/sandbox/gamemode/spawnmenu/creationmenu/content/contenttypes/weapons.lua
+        --Example taken from GMOD lua
+        local Weapons = list.Get("Weapon")
+        local Categories = {}
+        for k,weapon in pairs(Weapons) do
+            if (!weapon.Spawnable) then continue end
+            Categories[weapon.Category] = Categories[weapon.Category] or {} --create table if empty
+            table.insert(Categories[ weapon.Category ], weapon)
+        end
+        Weapons = nil
+
         if (true) then
-            for i,v in ipairs(PLUGIN:SortRestrictionTable(autobox.restrictions.weapon)) do
-                local container = vgui.Create("DPanel",frame)
-                container:SetSize(frame:GetWide(),16)
-                container:SetPos(0,15 * (i-1))
-                container.colind = (i % 2) + 1
-                function container:Paint(w,h)
-                    surface.SetDrawColor(colors[self.colind])
+            local lastadd = nil
+            for Category, v in SortedPairs(Categories) do --every category
+                local header = vgui.Create("DPanel",frame)
+                header:SetSize(frame:GetWide(),16)
+                if (lastadd) then header:MoveBelow(lastadd) else header:SetPos(0,0) end
+                function header:Paint(w,h)
+                    surface.SetDrawColor(0,0,0)
                     surface.DrawRect(0,0,w,h)
+                    draw.TextShadow({text = Category,pos = {5,0},xalign = TEXT_ALIGN_LEFT,yalign = TEXT_ALIGN_TOP},1)
                 end
-                local wepname
-                if (weapons.Get(v.Permission)) then
-                    wepname = weapons.Get(v.Permission or "").PrintName
-                else
-                    wepname = v.Permission
-                end
-                local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,wepname,#autobox.ranks-1,v.Immunity + 1)
-                container:SetTooltip(v.Permission)
-                function rbox:OnChange()
-                    autobox:UpdateRestriction("weapon",v.Permission,self.selected-1)
-                    --PLUGIN:UpdatePermission(v.Permission,self.selected)
+                local i = 0
+                lastadd = header
+
+                for k,wep in SortedPairsByMemberValue(v,"PrintName") do --weapon in category
+                    local name  = wep.PrintName or wep.ClassName
+                    local class = wep.ClassName
+                    local swep  = weapons.Get(class)
+                    local mat   = nil
+                    if (swep and file.Exists("materials/vgui/entities/" .. class .. ".vmt", "GAME")) then
+                        mat = Material("vgui/entities/" .. class)
+                    elseif (swep and file.Exists("materials/weapons/" .. class .. ".vmt","GAME")) then
+                        mat = Material("weapons/" .. class)
+                    elseif (file.Exists("materials/entities/" .. class .. ".png","GAME")) then
+                        mat = Material("entities/" .. class .. ".png")
+                    end
+
+
+                    local immunity = autobox.restrictions.weapon[class]
+                    if (!immunity) then continue end --bail if we missed one
+
+
+
+
+                    local container = vgui.Create("DPanel",frame)
+                    container:SetSize(frame:GetWide(),16)
+                    container:MoveBelow(lastadd)
+                    container.colind = (i % 2) + 1
+                    function container:Paint(w,h)
+                        surface.SetDrawColor(colors[self.colind])
+                        surface.DrawRect(0,0,w,h)
+                    end
+
+                    local mousecatch = vgui.Create("DPanel",container) --invisible panel to detect mouse on part of this panel
+                    mousecatch:SetSize((#autobox.ranks) * 16,16)
+                    function mousecatch:Paint(w,h)
+
+                    end
+                    function mousecatch:OnCursorEntered()
+                        if (PLUGIN.iframe and PLUGIN.iframe:IsValid()) then PLUGIN.iframe:Remove() end
+                        local iframe = vgui.Create("DPanel")
+                        local cx, cy = self:GetParent():LocalToScreen(self:GetPos())
+                        cy = cy - 128
+                        iframe:SetPos(cx,cy)
+                        iframe:SetSize(128,128)
+                        iframe:MakePopup()
+                        function iframe:Think()
+                            if (!mousecatch or !mousecatch:IsValid()) then self:Remove() end
+                        end
+                        function iframe:Paint(w,h)
+                            if (!mat) then return end
+                            surface.SetMaterial(mat)
+                            surface.SetDrawColor(color_white)
+                            surface.DrawTexturedRect(0,0,w,h)
+                        end
+                        function mousecatch:OnCursorExited()
+                            PLUGIN.iframe:Remove()
+                        end
+                        function iframe:OnCursorEntered()
+                            self:Remove()
+                        end
+                        PLUGIN.iframe = iframe
+                    end
+
+                    local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,name,#autobox.ranks-1,immunity + 1,{"guest","regular","respected","homie","admin","superadmin"})
+                    --container:SetTooltip(v.Permission)
+                    function rbox:OnChange()
+                        autobox:UpdateRestriction("weapon",class,self.selected-1)
+                        PLUGIN:UpdatePermission(class,self.selected)
+                    end
+
+                    lastadd = container
+
+                    i = i + 1
                 end
             end
         end
@@ -113,7 +189,7 @@ if (CLIENT) then
                 else
                     entname = v.Permission
                 end
-                local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,entname,#autobox.ranks-1,v.Immunity + 1)
+                local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,entname,#autobox.ranks-1,v.Immunity + 1,{"guest","regular","respected","homie","admin","superadmin"})
                 container:SetTooltip(v.Permission)
                 function rbox:OnChange()
                     autobox:UpdateRestriction("entity",v.Permission,self.selected-1)
@@ -142,7 +218,7 @@ if (CLIENT) then
                     surface.DrawRect(0,0,w,h)
                 end
 
-                local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,v.Permission,#autobox.ranks-1,v.Immunity + 1)
+                local rbox = autobox.draw:RadioBox(container,container:GetWide() - (#autobox.ranks) * 16,0,v.Permission,#autobox.ranks-1,v.Immunity + 1,{"guest","regular","respected","homie","admin","superadmin"})
                 function rbox:OnChange()
                     autobox:UpdateRestriction("tool",v.Permission,self.selected-1)
                     --PLUGIN:UpdatePermission(v.Permission,self.selected - 1)

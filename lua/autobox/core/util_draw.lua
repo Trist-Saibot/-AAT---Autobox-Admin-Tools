@@ -85,8 +85,9 @@ if (CLIENT) then
     end
     autobox.draw.btn_on = Material("autobox/ui/btn_on.png")
     autobox.draw.btn_off = Material("autobox/ui/btn_off.png")
-    function autobox.draw:RadioBox(parent,x,y,text,numoptions,default)
+    function autobox.draw:RadioBox(parent,x,y,text,numoptions,default,tooltips)
         if (IsValid(parent)) then
+            tooltips = tooltips or {}
             local panel = vgui.Create("DPanel",parent)
             panel:SetPos(x,y)
             panel:SetSize((numoptions + 1) * 16,16)
@@ -109,6 +110,9 @@ if (CLIENT) then
                 function btn:DoClick()
                     self:GetParent().selected = i
                     self:GetParent():OnChange()
+                end
+                if (tooltips[i]) then
+                    btn:SetTooltip(tooltips[i])
                 end
             end
 
