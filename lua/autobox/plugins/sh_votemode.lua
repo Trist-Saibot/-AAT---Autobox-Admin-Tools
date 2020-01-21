@@ -48,7 +48,14 @@ function PLUGIN:Call(ply)
     else
         local minutes = math.floor((self.cooldown-CurTime()) / 60 % 60)
         local seconds = math.floor((self.cooldown-CurTime()) % 60)
-        autobox:Notify( ply, autobox.colors.red, "Please wait", autobox.colors.white, " " .. minutes .. ":" .. seconds, autobox.colors.red, " before starting another mode vote." )
+        local seconds_but_a_string = tostring(seconds)
+        if string.len(seconds_but_a_string) == 1 then
+        	seconds_but_a_string = "0"..tostring(seconds)
+        else
+
+        end
+
+        autobox:Notify( ply, autobox.colors.red, "Please wait", autobox.colors.white, " " .. minutes .. ":" .. seconds_but_a_string, autobox.colors.red, " before starting another mode vote." )
     end
 end
 
