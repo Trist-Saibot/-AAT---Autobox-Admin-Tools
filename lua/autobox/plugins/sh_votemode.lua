@@ -46,7 +46,7 @@ function PLUGIN:Call(ply)
 
         timer.Create("AAT_VoteModeEnd",10,1,function() PLUGIN:VoteEnd() end)
     else
-        autobox:Notify( ply, autobox.colors.red, "Please wait ", autobox.colors.white, autobox:FormatTime(math.floor(CurTime() - self.cooldown)), autobox.colors.red, "before starting another mode vote." )
+        autobox:Notify( ply, autobox.colors.red, "Please wait ", autobox.colors.white, autobox:FormatTime(math.floor(self.cooldown - CurTime())), autobox.colors.red, "before starting another mode vote." )
     end
 end
 

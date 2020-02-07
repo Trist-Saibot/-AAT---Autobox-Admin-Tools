@@ -76,4 +76,16 @@ function PLUGIN:PlayerSpawn(ply)
     end
 end
 
+function PLUGIN:PlayerSpawnEffect(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnNPC(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnObject(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnProp(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnRagdoll(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnSENT(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnSWEP(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerSpawnVehicle(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:CanTool(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerGiveSWEP(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+function PLUGIN:PlayerCanPickupWeapon(ply) if (ply:GetNWBool("AAT_Ragdolled",false)) then return false end end
+
 autobox:RegisterPlugin(PLUGIN)
