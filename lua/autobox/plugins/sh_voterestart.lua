@@ -1,26 +1,26 @@
 -----
--- Vote mode
+-- Vote restart
 -----
 
 local PLUGIN = {}
-PLUGIN.title = "Vote Mode"
+PLUGIN.title = "Vote Restart"
 PLUGIN.author = "Trist"
-PLUGIN.description = "Allows you to vote for the gamemode"
-PLUGIN.command = "votemode"
+PLUGIN.description = "Allows you to vote for a restart"
+PLUGIN.command = "voterestart"
 
-PLUGIN.options = {"War","Build"}
+PLUGIN.options = {"Yes","No"}
 
 if (SERVER) then
-    util.AddNetworkString("AAT_VoteMode")
-    util.AddNetworkString("AAT_VoteModeEnd")
-    net.Receive("AAT_VoteMode",function(len,ply)
-        if (!ply.AAT_VotedMode) then
+    util.AddNetworkString("AAT_VoteRestart")
+    util.AddNetworkString("AAT_VoteRestartEnd")
+    net.Receive("AAT_VoteRestart",function(len,ply)
+        if (!ply.AAT_VotedRestart) then
             local option = net.ReadInt(4)
             PLUGIN.Votes[option] = PLUGIN.Votes[option] + 1
-            ply.AAT_VotedMode = true
+            ply.AAT_VotedRestart = true
             PLUGIN.VotingPlayers = PLUGIN.VotingPlayers + 1
             if ( PLUGIN.VotingPlayers >= #player.GetAll() ) then
-                timer.Remove("AAT_VoteModeEnd")
+                timer.Remove("AAT_VoteRestartEnd")
                 PLUGIN:VoteEnd()
             end
         end
@@ -37,24 +37,24 @@ function PLUGIN:Call(ply)
         self.VotingPlayers = 0
 
         for _,v in ipairs(player.GetAll()) do
-            v.AAT_VotedMode = false
+            v.AAT_VotedRestart = false
         end
 
-        net.Start("AAT_VoteMode")
+        net.Start("AAT_VoteRestart")
         net.Broadcast()
-        autobox:Notify( autobox.colors.blue, ply:Nick(), autobox.colors.white, " has called a ", autobox.colors.red, "Mode Vote", autobox.colors.white, "." )
+        autobox:Notify( autobox.colors.blue, ply:Nick(), autobox.colors.white, " has called a ", autobox.colors.red, "Restart Vote", autobox.colors.white, "." )
 
-        timer.Create("AAT_VoteModeEnd",10,1,function() PLUGIN:VoteEnd() end)
+        timer.Create("AAT_VoteRestartEnd",10,1,function() PLUGIN:VoteEnd() end)
     else
-        autobox:Notify( ply, autobox.colors.red, "Please wait ", autobox.colors.white, autobox:FormatTime(math.floor(self.cooldown - CurTime())), autobox.colors.red, " before starting another mode vote." )
+        autobox:Notify( ply, autobox.colors.red, "Please wait ", autobox.colors.white, autobox:FormatTime(math.floor(self.cooldown - CurTime())), autobox.colors.red, " before starting another restart vote." )
     end
 end
 
 if ( CLIENT ) then
-    net.Receive("AAT_VoteMode",function()
+    net.Receive("AAT_VoteRestart",function()
         PLUGIN:ShowVoteMenu()
     end)
-    net.Receive("AAT_VoteModeEnd",function()
+    net.Receive("AAT_VoteRestartEnd",function()
         if (PLUGIN.VoteWindow and PLUGIN.VoteWindow.Close) then PLUGIN.VoteWindow:Close() end
     end)
 end
@@ -63,7 +63,7 @@ function PLUGIN:ShowVoteMenu()
     self.VoteWindow = vgui.Create("DFrame")
     self.VoteWindow:SetSize(200,95)
     self.VoteWindow:Center()
-    self.VoteWindow:SetTitle("Vote Mode")
+    self.VoteWindow:SetTitle("Restart the Server?")
     self.VoteWindow:SetDraggable(false)
     self.VoteWindow:ShowCloseButton(false)
     self.VoteWindow:SetBackgroundBlur(true)
@@ -80,7 +80,7 @@ function PLUGIN:ShowVoteMenu()
         votebut:SetText( option )
         votebut:SetTall( 25 )
         function votebut.DoClick()
-            net.Start("AAT_VoteMode")
+            net.Start("AAT_VoteRestart")
             net.WriteInt(i,4)
             net.SendToServer()
             self.VoteWindow:Close()
@@ -90,7 +90,7 @@ function PLUGIN:ShowVoteMenu()
 end
 
 function PLUGIN:VoteEnd()
-    net.Start("AAT_VoteModeEnd")
+    net.Start("AAT_VoteRestartEnd")
     net.Broadcast()
 
     local msg = ""
@@ -110,25 +110,14 @@ function PLUGIN:VoteEnd()
         end
     end
 
-    if (resultset[1] != 50) then
-    --Makes sure there was no tie.
-        if (resultset[1] > resultset[2]) then
-        --War Mode won the vote.
-        RunConsoleCommand( "sbox_godmode", 0 )
-        RunConsoleCommand( "sbox_noclip", 0 )
+    autobox:Notify( autobox.colors.red, "Vote Restart" .. " ", autobox.colors.white, msg .. "." )
 
-        autobox.silentNotify = true
-            autobox:CallPlugin("noclip",ents.Create(""),"*",0)
-        autobox.silentNotify = false
-
-        else
-        --Build Mode won the vote.
-        RunConsoleCommand( "sbox_godmode", 1 )
-        RunConsoleCommand( "sbox_noclip", 1 )
-        end
+    if (resultset[1] > resultset[2]) then
+            autobox:Notify( autobox.colors.red, "The server will restart in 30 seconds." )
+            timer.Simple(30,function()
+                RunConsoleCommand("_restart")
+            end)
     end
-
-    autobox:Notify( autobox.colors.red, "Vote Mode" .. " ", autobox.colors.white, msg .. "." )
 
 end
 

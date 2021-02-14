@@ -89,6 +89,7 @@ function AAT_Player:AAT_HasBadge(BadID)
     else
         local goal = autobox.badge:GetGoal(BadID,self)
         local prog = self:AAT_GetBadgeProgress(BadID)
+        if (!goal or !prog) then return false end --fixes scorebaord error
         if prog >= goal then return true else return false end
     end
 end
@@ -257,7 +258,7 @@ if (CLIENT) then
         autobox.badge.progress = net.ReadTable()
     end)
     function autobox.badge:ToggleBadgeDisplay(BadID)
-        if (#LocalPlayer():AAT_GetDisplayedBadges() <= 5) then --5 displayed cap
+        if (#LocalPlayer():AAT_GetDisplayedBadges() <= 5 or LocalPlayer():AAT_BadgeDisplayed(BadID)) then --5 displayed cap
             net.Start("AAT_ToggleBadgeDisplay")
             net.WriteString(BadID)
             net.WriteBool(!LocalPlayer():AAT_BadgeDisplayed(BadID))
