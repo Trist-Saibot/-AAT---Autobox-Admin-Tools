@@ -98,6 +98,11 @@ if (SERVER) then
             autobox:SyncRanks(ply)
             autobox:SyncPerms(ply)
 
+            --2/18/2021 I have NO IDEA why I did not give this priority when setting up AAT players, but now it does have it
+            --I think I meant this to be temporary originally
+            autobox.badge:LoadPlayer(ply)
+            autobox.badge:SyncProgress()
+
             hook.Run("AAT_InitializePlayer",ply)
             ply.Initialized = true
         end

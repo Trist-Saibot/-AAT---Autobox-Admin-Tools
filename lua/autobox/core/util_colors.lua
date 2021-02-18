@@ -41,6 +41,7 @@ autobox.colors.tan2 = Color(226,209,181)
 autobox.colors.brown = Color(66,51,48)
 autobox.colors.green = Color(85,255,100,255)
 autobox.colors.pink = autobox:HexToColor("FF69B4")
+autobox.colors.ascian = Color(168,67,85)
 autobox.colors.discord =
 {
     autobox:HexToColor("#7289DA"),

@@ -196,11 +196,6 @@ if (SERVER) then
         self.progress[SteamID] = pdata --store this table in the collection of player data
     end
 
-    hook.Add("PlayerInitialSpawn", "AAT_LoadBadges", function(ply)
-        autobox.badge:LoadPlayer(ply)
-        autobox.badge:SyncProgress()
-    end)
-
     util.AddNetworkString("AAT_SyncBadgeData")
     function autobox.badge:SyncProgress()
         --send player progress data to all players
